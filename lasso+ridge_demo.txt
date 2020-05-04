@@ -1,0 +1,31 @@
+<<dd_version: 2>>
+<<dd_include: header.txt>>
+
+A tutorial/walkthrough of basic lasso and ridge model selection techniques
+==========================================================================
+
+This is a stylized version of a lasso and ridge commands in Stata. The best way to follow along is to download the accompanying "lasso+ridge.do" script which includes on the Stata commands from this file. Be sure to change the file paths to match those of your computer.
+
+From what little I know about machine learning (ML) is that Stata has been somewhat slow to the game. Version 16, released less than a year ago in the summer of 2019, finally included an in-house command **lasso** that performs many of the functions that were previously found only in community-written packages. I learned using one of these packages called lassopack -- which includes the command **lasso2**. This packages is available on SSC and we'll use that package here to demonstrate lasso and ridge algorithms. I don't have much experience with the in-house command built into version 16 and the few times I have used it, I get results that I don't expect. When I have time I'll include a separate script that directly compares the results from **lasso2** and **lasso**. In short, I'm skeptical of **lasso** because the command doesn't produce results that I know I should be getting, but I'm very very open to the possibility that I'm not doing something right. If that's the case, please comment and/or show me how to actually use **lasso** properly.
+
+Anyway, The first thing we need to do is to download lassopack from the SSC. We could do so by running the install command from the ssc, which would look like this
+~~~~
+<<dd_ignore>>
+<<dd_do>>
+ssc install pdslasso
+<</dd_do>>
+<</dd_ignore>>
+~~~~
+However, the authors of this particular package (see https://statalasso.github.io/) note that they update their GitHub-hosted version more frequently than that on the SSC. We'll install directly from GitHub instead and use
+~~~~
+<<dd_do>>
+net install lassopack, from("https://raw.githubusercontent.com/statalasso/lassopack/master/lassopack_v131/") replace
+<</dd_do>>
+~~~~
+We'll also be using the estout package to store results from the lasso commands. You probably know about estout but, if not, I highly recommend familiarizing yourself with it as it will become more and more useful to you over time.
+~~~~
+<<dd_do>>
+ssc install estout, replace
+<</dd_do>>
+~~~~
+Now we need a dataset.
