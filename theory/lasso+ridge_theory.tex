@@ -1,0 +1,61 @@
+% -------------------------------------- PREAMBLE STARTS HERE --------------------------------------------
+% This is the preamble. It sets the main options for your document and load the packages used.
+
+% Load packages: making changes here can cause errors.
+\documentclass{article}                 % Define document class. Shouldn't change.
+\usepackage[a4paper]{geometry}        	% Calls and sets into A4 size mode
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{import}                     % This package allows us to import files.
+\usepackage{multirow}
+\usepackage{adjustbox}                  % This package allows you to adapt table and figure sizes to fit the page and is required by iebaltab
+\usepackage{geometry}
+\usepackage{subcaption}                 % This packages is used to create subfigures
+\usepackage{float}
+
+\usepackage{setspace}
+\doublespacing                          % Comment out (write % at the beginning of the line) to use single spacing
+\usepackage{indentfirst}	            % Indents the fist paragraph of each section
+\usepackage{parskip}                    % This packages sets the spacing between two paragraphs
+\usepackage{mathtools}
+
+\usepackage{hyperref}
+
+
+\title{ SFS Machine Learning Repo \\ Lasso and Ridge Explained Mathematically }
+\author{}
+\date{}                    							% Uncomment this to not print date or insert specific date
+
+% -------------------------------------- PREAMBLE ENDS HERE --------------------------------------------
+
+
+\begin{document}
+
+	\maketitle
+	\tableofcontents       % Comment out to not print summary
+
+	\newpage
+
+\section{Introduction}
+	Yay! You opened this because you like math. In this document, we'll summarize the mathematical concepts needed to understand the basics of what's going on in Lasso and Ridge. Unless I cite things explicitly, assume the knowledge comes from my course with Prof. Ani Silwal in in Spring 2019.
+
+\newpage
+\section{Lasso}
+\subsection{OLS, conceptually revisited}
+	Let's pretend we're students entering our fourth year at Hogwarts School for Witchcraft and Wizardry. We really need a new broomstick, so we plan a trip to Diagon Alley. We're eyeing the Firebolt model but, since we're not familiar with the muggle internet, we can only \textit{estimate} the true cost of the broomstick. Good thing we've taken Arithmancy with Professor Tiongson. He taught us that we can generalize the cost of any broomsticks, $y$, by creating a mathematical relationship between known variables, or $x$'s. But we don't know what the real $y$'s actually are, so we'll need an estimator called $\hat{y}$ that uses some information from our $x$'s to take a guess at the real $y$. Now there are of course many variables we may use to estimate the cost of a broomstick, such as $x_1$, the average cost of last year's top selling broomstick models, $x_2$, the yearly rate of inflation, and, knowing that pricing patterns often relate to the product release cycle, $x_3$, the number of days since the last major broomstick model release. We might also want to take into account the number of features the broomstick offers, the number of hours required for the broomstick's production, and whether or not Lucious Malfoy, being among the elitist and fascist of magical families, plans to purchase a set for Slytherin, among other factors.
+
+	Good thing we paid attention in class! We learned that we can express $y$ by using the "standard" linear equation model, which looks something like this $$y = \beta_0 + \beta_{1}x_1 + \beta_{2}x_2 + \beta_{n}x_n + \varepsilon$$
+
+	where $\beta_0$ is our constant, $\beta_i$'s our coefficients, and $\varepsilon$ our error term. So when we \texttt{reg y x} in Stata, we're basically just telling the computer to fit the data to this equation the best it can.
+
+	But How does Stata actually calculate all the components of the equation? It minimizes the sum of the squared error term, or minimizing $$(all\:distances \:from \:the \:'dots' \:on \:the \:scatterplot \:to \:the \:line \:running \:through \:them)^2$$
+
+
+	We can express this idea mathematically by adding up all of the differences between the actual broomstick costs and estimated costs like this $$\Sigma(y_i - \hat{y})^2  $$
+
+
+
+
+
+\end{document}
