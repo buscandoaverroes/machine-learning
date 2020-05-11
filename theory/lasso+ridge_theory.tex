@@ -19,7 +19,6 @@
 \usepackage{indentfirst}	            % Indents the fist paragraph of each section
 \usepackage{parskip}                    % This packages sets the spacing between two paragraphs
 \usepackage{mathtools}
-
 \usepackage{hyperref}
 
 
@@ -43,16 +42,31 @@
 \newpage
 \section{Lasso}
 \subsection{OLS, conceptually revisited}
-	Let's pretend we're students entering our fourth year at Hogwarts School for Witchcraft and Wizardry. We really need a new broomstick, so we plan a trip to Diagon Alley. We're eyeing the Firebolt model but, since we're not familiar with the muggle internet, we can only \textit{estimate} the true cost of the broomstick. Good thing we've taken Arithmancy with Professor Tiongson. He taught us that we can generalize the cost of any broomsticks, $y$, by creating a mathematical relationship between known variables, or $x$'s. But we don't know what the real $y$'s actually are, so we'll need an estimator called $\hat{y}$ that uses some information from our $x$'s to take a guess at the real $y$. Now there are of course many variables we may use to estimate the cost of a broomstick, such as $x_1$, the average cost of last year's top selling broomstick models, $x_2$, the yearly rate of inflation, and, knowing that pricing patterns often relate to the product release cycle, $x_3$, the number of days since the last major broomstick model release. We might also want to take into account the number of features the broomstick offers, the number of hours required for the broomstick's production, and whether or not Lucious Malfoy, being among the elitist and fascist of magical families, plans to purchase a set for Slytherin, among other factors.
+	Let's pretend we're students entering our fourth year at Hogwarts School for Witchcraft and Wizardry. We really need a new broomstick, so we plan a trip to Diagon Alley. We're eyeing the Firebolt model but, since we're not familiar with the muggle internet, we can only \textit{estimate} the true cost of the broomstick. Good thing we've taken Arithmancy with Professor Tiongson. He taught us that we can generalize the cost of any broomsticks, $y$, by creating a mathematical relationship between known variables, or $x$'s. But we don't know what the real $y$'s actually are, so we'll need an estimator called $\hat{y}$ that uses some information from our $x$'s to take a guess at the real $y$. Now there are of course many variables we may use to estimate the cost of a broomstick, such as $x_1$, the average cost of last year's top selling broomstick models, $x_2$, the yearly rate of inflation, and, knowing that pricing patterns often relate to the product release cycle, $x_3$, the number of days since the last major broomstick model release. We might also want to take into account the number of features the broomstick offers, the broomsticks' length, weight, the number of hours required for the broomstick's production, and whether or not Lucious Malfoy, being among the most elite and fascist of magical families, plans to purchase a set for the Slytherin Quidditch Team. If it peeks Malfoy's interest, it's not likely to be priced for the common folk. See? The number of variables at our disposal quickly adds up.
 
-	Good thing we paid attention in class! We learned that we can express $y$ by using the "standard" linear equation model, which looks something like this $$y = \beta_0 + \beta_{1}x_1 + \beta_{2}x_2 + \beta_{n}x_n + \varepsilon$$
+	Good thing we paid attention in class! We learned that we can express $\hat{y}$ by using the "standard" linear equation model, which looks something like this $$\hat{y} = \beta_0 + \beta_{1}x_1 + \beta_{2}x_2 + \beta_{n}x_n + \varepsilon$$
 
 	where $\beta_0$ is our constant, $\beta_i$'s our coefficients, and $\varepsilon$ our error term. So when we \texttt{reg y x} in Stata, we're basically just telling the computer to fit the data to this equation the best it can.
 
 	But How does Stata actually calculate all the components of the equation? It minimizes the sum of the squared error term, or minimizing $$(all\:distances \:from \:the \:'dots' \:on \:the \:scatterplot \:to \:the \:line \:running \:through \:them)^2$$
 
+	We can express this idea mathematically by adding up all of the differences between the actual broomstick costs and estimated costs like this $$\sum(y_i - \hat{y})^2  $$ Why do we square the difference between the estimated and actual measurements? Who knows. What it does, in essence, is disproportionately penalize the estimated measurements that are \textit{farther} away from the actual measurement compared to those that quite close. Some old white dude in an Ivy-League school probably decided it was best to do it this way, and so here we are.
 
-	We can express this idea mathematically by adding up all of the differences between the actual broomstick costs and estimated costs like this $$\Sigma(y_i - \hat{y})^2  $$
+	Since we know that $\hat{y}$ can be expressed as $\hat{y} = \beta_0 + \beta_{1}x_1 + \beta_{2}x_2 + \beta_{n}x_n + \varepsilon$, we can substitute this later equation into our $\sum$ equation (and distributing the negative to all terms in the expression): $$\sum(y_i - \beta_0 - \beta_{1}x_1 - \beta_{2}x_2 - \beta_{n}x_n )^2  $$
+	Remember, the goal is to minimize the value that results form this equation, which is the all of the error terms added up. Stata does this math in the background, spits out the coefficients that minimize the error value above, and we go on our merry way. If you ever want to know what math Stata is actually doing, it's usually buried out of sight in the command's \href{https://www.stata.com/manuals13/rregress.pdf}{help file}.
+
+
+
+
+	\subsection{Lasso}
+	Lasso adds a very slight modification to the OLS equation that makes it super meta. We'll get to this in a moment but first let's walk through what Lasso and Ridge algorithms are trying to do -- they're categorically different from OLS.
+	OLS gives you coefficients for the only variables you give it; it does not tell you which variables to include or exclude in your model. You say, "great, I think $y_1$ the price of a broomstick relates to $x_1$, the average cost of broomsticks last year, and $x_2$, the number of features it has", you give those three variables to Stata as \texttt{reg price avcost nfeatures}, and Stata runs the equation above and gives you the value of coefficients to the input variables you gave it.
+	Lasso (and Ridge) algorithms, on the other hand, tell you \textit{which} variables to include in your model (and, optionally, what the coefficients are on the variables the algorithm selects). This is a similar idea to stepwise functions. But unlike stepwise functions and OLS, the functions that Lasso and Ridge try to satisfy introduce a $\lambda$ variable. This lambda is an unknown constant that acts as a penalty applied to each additional coefficient -- or variable -- you include in the model. Some guy named \href{https://statweb.stanford.edu/~tibs/index.html}{Tibshirani} thought, in this age of computers, we should discourage people from just throwing in any variable they can think of and, instead, make sure we focus only on the few variables that matter the most for predictive power. His goal is to minimize $$ \frac{1}{n} \sum (y_i - x'_i \beta)^2 + \lambda \sum\ | \beta_j | $$ where the $\beta_j$'s are the coefficients for all the $x$'s and $\lambda$ is the penalty. Since we want to avoid high penalties, there are two ways we can do that: decrease $\lambda$ or decrease the number of included coefficients.
+
+	One more thing. Notice what happens when $\lambda = 0$? $$\frac{1}{n} \sum (y_i - x'_i \beta)^2 + 0 \sum\ | \beta_j | $$
+	Right, the final term becomes 0. And this looks a lot like OLS...that's because it is OLS. $$\frac{1}{n} \sum (y_i - x'_i \beta)^2 + 0 $$ So, Lasso algorithms with $\lambda$ values $= 0$ is virtualy the same equation as OLS. This makes sense, because in this 0-termed Lasso world we are still \textit{minimizing the sum of squared error terms} and there's no penalty for including additional coefficients as lambda is 0. 
+
+
 
 
 
