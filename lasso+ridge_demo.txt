@@ -1,5 +1,4 @@
 <<dd_version: 2>>
-<<dd_include: header.txt>>
 
 A tutorial/walkthrough of basic lasso and ridge model selection techniques
 ==========================================================================
@@ -11,49 +10,84 @@ From what little I know about machine learning (ML) is that Stata has been somew
 Anyway, The first thing we need to do is download lassopack from the SSC. We could do so by running the install command from the ssc, which would look like this
 ~~~~
 <<dd_ignore>>
-<<dd_do>>
+
 ssc install pdslasso
-<</dd_do>>
+
 <</dd_ignore>>
 ~~~~
 However, the authors of this particular package (see https://statalasso.github.io/) note that they update their GitHub-hosted version more frequently than that on the SSC. We'll install directly from GitHub instead and use
 ~~~~
 <<dd_ignore>>
-<<dd_do>>
+
 net install lassopack, from("https://raw.githubusercontent.com/statalasso/lassopack/master/lassopack_v131/") replace
-<</dd_do>>
+
 <</dd_ignore>>
 ~~~~
 We'll also be using the estout package to store results from the lasso commands. You probably know about estout but, if not, I highly recommend familiarizing yourself with it as it will become more and more useful to you over time.
 ~~~~
 <<dd_ignore>>
-<<dd_do>>
+
 ssc install estout, replace
-<</dd_do>>
+
 <</dd_ignore>>
 ~~~~
 Whereas traditional econometrics cares about making sense of relationships between people, actions, and things in the world, the machine-learning approach doesn't really care about any of that. Instead, machine-learning classifies, predicts, and seeks to build the best model independent of theoretical or historical context. Take Google; they just want to know "yes" or "no". Will you click on the ad or not? They've likely got hundreds of variables on "you" and they're pretty good at predicting the answer to that question, for each of us. The World Bank or J-PAL, residing comfortably in the classical econometrical tradition, care much more about making sure the model makes sense in context: does climate change incite violence? Interestingly, from an econometrics perspective, this question becomes very difficult to answer in the affirmative (even though we all know the meteorological and biological evidence of climate change is immense) since very few researchers have told a convincing story that isolates climate change-induced weather variability from other economic or political factors which also affect intermediate factors -- such as food or water insecurity -- that may incite violence. (A fantastic paper by Selby et al that examines climate change and the Syrian Revolution is linked here: https://www.sciencedirect.com/science/article/pii/S0962629816301822) Econometrics cares about "why" and machine-learning cares about what the best model looks like; in a way the former is much harder to do well, in my opinion. But it's also pretty easy to have machine-learning go horribly wrong. The rest of this tutorial will hopefully set us up with some basic conceptual and coding understanding to, at least, not totally mess up machine-learning.
 
 Now we need a dataset. Let's first use one of Stata's built-in datasets to demonstrate an instance where ML won't be as useful.
 
-real~~~~
-<<dd_ignore>>
+~~~~
 <<dd_do>>
+
 sysuse auto, clear
-browse
+
+
 <</dd_do>>
-<</dd_ignore>>
 ~~~~
 Now let's say we want to predict fuel efficiency. An econometric approach might ask what factors predict efficiency (in miles/gallon) by examining the context of the US auto market in the late 1970s, such as protectionist policies or the energy crisis, production patterns etc. An ML approach would be to simply create the model that simply predicts miles/gallon with the variables at our disposal. We could run lasso or ridge here, but we don't have that many variables to choose from here. It won't take us very long via trial and error before we realize that the indicator variable foreign and weight are two strong predictors using OLS.
 ~~~~
 <<dd_do>>
-reg mpg /// /*outcome variable*/
-		foreign weight
+reg mpg /*outcome variable*/	foreign weight
 <</dd_do>>
 ~~~~
-Great, but what happens if we have a dataset like this one:
+Great, but what happens if we have a dataset like this one, from the UCI machine learning repository? Let's first load the dataset, but we'll have to execute this entire block of code at once in order for things to work right.
+~~~~
+<<dd_do: noout >>
+import delimited using "https://archive.ics.uci.edu/ml/machine-learning-databases/spambase/spambase.names", clear
+
+	drop 		if v2 != ""
+	drop 		if v1 == ""
+	assert 		_N 	  == 57
+	split 		v1 , parse(:) generate(v_)
+	keep 		v_1
+	tempfile	names db
+
+	levelsof 			v_1 ///
+						, clean local(lbls)
+	tokenize 			"`lbls'"
+	save 		`names', replace
+
+import delimited 	///
+		using "https://archive.ics.uci.edu/ml/machine-learning-databases/spambase/spambase.data" ///
+		, clear
+
+ds
+return list
+local 	varlist = r(varlist)
+local 	length: list sizeof varlist
+
+forvalues v = 1/`length' {
+	label variable  v`v' "``v''"
+}
+save `ds', replace
+<</dd_do>>
+~~~~
+
+Great -- now let's describe dataset...
+
 ~~~~
 <<dd_do>>
-
+describe, short
 <</dd_do>>
 ~~~~
+
+Woah, 58 variables, now that's too many to guess and check -- especially because the variable names are pretty useless. We can read the description file (https://archive.ics.uci.edu/ml/machine-learning-databases/spambase/spambase.DOCUMENTATION) and we find out that the dataset is about spam emails. We have to predict whether or not each row/observation represents a "normal" email or spam email, indicated by **v58**. 

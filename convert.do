@@ -5,5 +5,5 @@
 
 * convert source file into html.
 	dyndoc 	"`repo'/lasso+ridge_demo.txt" ///
-				, saving("`repo'/lasso+ridge_demo.txt") ///
+				, saving("`repo'/lasso+ridge_demo.html") ///
 				nostop replace
