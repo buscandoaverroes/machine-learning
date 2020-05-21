@@ -83,3 +83,7 @@ lasso2 v58 $explvars, plotpath(lambda) plotlabel plotvar($explvars) plotopt(lege
 cvlasso v58 $explvars, plotcv seed(123) lopt alpha(0) postest
 gl lassoVars=e(selected) //Save variables selected by lasso, where gl is global
 reg v58 $lassoVars
+******
+
+
+import delimited using "/Users/tommosher/Downloads/100 leaves plant species/data_Mar_64.txt", clear
