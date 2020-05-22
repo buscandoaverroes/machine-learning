@@ -32,6 +32,9 @@ if (0) {
 
 *3. Baisc ML example  _______________________________________________________________________
 }
+
+* Lasso
+
 /*
 import delimited using ///
  				"http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv" ///
@@ -68,3 +71,46 @@ import delimited using ///
 														/* now selected lambda == 10.761 */
 
 	reg 			quality 	${lassovars}			/* runs OLS with the variables selected */
+
+
+* Ridge
+
+import delimited using ///
+						"https://web.stanford.edu/~hastie/ElemStatLearn/datasets/prostate.data" ///
+						, clear
+
+	global rhsvars 	lcavol lweight age lbph svi lcp gleason pgg45
+
+
+	* first try lasso
+	lasso2 			lpsa ///							/* outcome variable, continuous */
+						${rhsvars}	///					/* potential explanatory variables */
+							, plotpath(lambda) ///		/* plots the lambda path	*/
+							plotlabel ///				/* puts labels on the lines  */
+							plotvar(${rhsvars}) ///		/* tells stata to plot all the explanatory vars */
+							plotopt(legend(on)) ///		/* turns the legend on beneath the graph */
+							alpha(1) /// 				/* where =1 means lasso technique, 0 means ridge */
+							long						/* turns on full output  */
+	return list // why not any return estimates
+	global 				lpsalasso =  e(selected)			/* store the variables selected by lasso */
+
+	graph export 		"lpsa-lasso-graph.png", replace
+	lasso2,				lic(ebic)
+
+	* now try ridge
+	lasso2 			lpsa ///							/* outcome variable, continuous */
+						${rhsvars}	///					/* potential explanatory variables */
+							, plotpath(lambda) ///		/* plots the lambda path	*/
+							plotlabel ///				/* puts labels on the lines  */
+							plotvar(${rhsvars}) ///		/* tells stata to plot all the explanatory vars */
+							plotopt(legend(on)) ///		/* turns the legend on beneath the graph */
+							alpha(0) /// 				/* where =1 means lasso technique, 0 means ridge */
+							long						/* turns on full output  */
+	global 				lpsaridge  = e(selected)			/* store the variables selected by lasso */
+
+	graph export 		"lpsa-ridge-graph.png", replace
+	lasso2,				lic(ebic)
+
+	macro list 
+	eststo lasso: reg lpsa ${lpsalasso}
+	eststo ridge: reg lpsa ${lpsardige}
