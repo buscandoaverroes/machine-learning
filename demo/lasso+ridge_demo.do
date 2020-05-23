@@ -27,7 +27,7 @@ if (0) {
 
 	sysuse 	auto, clear
 
-	reg 	mpg 			/*outcome variable*/	///
+	reg 	price 			/*outcome variable*/	///
 			foreign weight /*explanatory variables*/
 
 *3. Baisc ML example  _______________________________________________________________________
@@ -41,9 +41,9 @@ import delimited using ///
  				, clear
 				*/
 
-	import delimited using "/Users/tommosher/Downloads/winequality-white.csv" ///
+	import delimited using "/Users/tommosher/Documents/dta/repo-data/ml/wine/winequality-red.csv" ///
 					, clear
-
+	describe 		, short
 	global 			winevars 	fixedacidity volatileacidity citricacid residualsugar chlorides ///
 								freesulfurdioxide totalsulfurdioxide ph sulphates alcohol
 
@@ -63,7 +63,7 @@ import delimited using ///
 	 					${winevars}	///					/* explanatory vars */
 							, plotcv ///				/* plots the error as a function of lambda */
 							seed(123) /// 				/* sets a random seed */
-							lopt /// 					/* tells stata to estimate the model with the ideal lambda */
+							lopt /// 					/* estimate the model with the ideal lambda */
 							alpha(1) /// 				/* sets method to lasso */
 							postest 					/* allows for more postestimation things  */
 
@@ -76,8 +76,8 @@ import delimited using ///
 * Ridge
 
 import delimited using ///
-						"https://web.stanford.edu/~hastie/ElemStatLearn/datasets/prostate.data" ///
-						, clear
+				"https://web.stanford.edu/~hastie/ElemStatLearn/datasets/prostate.data" ///
+				, clear
 
 	global rhsvars 	lcavol lweight age lbph svi lcp gleason pgg45
 
@@ -91,8 +91,8 @@ import delimited using ///
 							plotopt(legend(on)) ///		/* turns the legend on beneath the graph */
 							alpha(1) /// 				/* where =1 means lasso technique, 0 means ridge */
 							long						/* turns on full output  */
-	return list // why not any return estimates
-	global 				lpsalasso =  e(selected)			/* store the variables selected by lasso */
+	return list // why not any return estimates??
+	global 				lpsalasso =  e(selected)		/* store the variables selected by lasso */
 
 	graph export 		"lpsa-lasso-graph.png", replace
 	lasso2,				lic(ebic)
@@ -106,11 +106,11 @@ import delimited using ///
 							plotopt(legend(on)) ///		/* turns the legend on beneath the graph */
 							alpha(0) /// 				/* where =1 means lasso technique, 0 means ridge */
 							long						/* turns on full output  */
-	global 				lpsaridge  = e(selected)			/* store the variables selected by lasso */
+	global 				lpsaridge  = e(selected)		/* store the variables selected by lasso */
 
 	graph export 		"lpsa-ridge-graph.png", replace
 	lasso2,				lic(ebic)
 
-	macro list 
+	macro list
 	eststo lasso: reg lpsa ${lpsalasso}
 	eststo ridge: reg lpsa ${lpsardige}
