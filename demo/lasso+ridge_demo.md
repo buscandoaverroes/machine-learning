@@ -66,8 +66,45 @@ If you look at the help file, you'll see that we need to tell Stata in order to 
 global 	winevars 	fixedacidity volatileacidity citricacid residualsugar chlorides freesulfurdioxide totalsulfurdioxide ph sulphates alcohol
 ```
 
-Now let's run our lasso command. The one option worth noting here is: alpha(1). This tells Stata to run a **lasso** algorithm as opposed to ridge (see more explanation in the theory file.) I'll include other options that you can see explained in the do file.
+Now let's run our lasso command. Remember that lasso is an algorithm that selects explanatory variables as a function of lamba, a coefficient "penalty". The one option worth noting with this command is: alpha(1). This tells Stata to run a **lasso** algorithm as opposed to ridge (see more explanation in the theory file). I'll include other options that you can see explained in the do file.
 
 ```{stata}
 lasso2 quality ${winevars}, plotpath(lambda) plotlabel plotvar(${winevars}) plotopt(legend(on)) alpha(1)
 ```
+
+If we take a look at the full table, we notice that as lambda decreases, more variables are added to our model. (This is because the "pentalty" or adding additional variables decreases as lambda decreases.) We can see this trend by looking at the generated output graph. As lambda increases, the coefficents for our covariates decreases until they reach 0 -- that is, when they are dropped from the model all together. But notice how some variables, such as **citricacid** "drop off" quicker than others, such as **volatileacidity**. One might interpret this as an indication that variables that are "slower" to drop off are better predictors of wine quality; this may be a general rule of thumb but is not always true. The iteration higlighted with a **"*"** will indicate the model with the lowest error (as measured by ebic). 7 variables are included in this model. Let's note the value of lambda that gave us our lowest "error": 51.99287. This is our "selected lambda"
+
+Our next command will run standard OLS with the 7 variable selected by the lasso algorithm. It won't give us the full output we're used to with **reg**, but it will at least give us the value of the coefficients:
+```{stata}
+lasso2, 		lic(ebic)
+```
+
+## Cross-Validation
+
+Cross-validation is a means of testing out-of-sample fit. We want to develop a model that is valid not only for our data in the data, but, in our case, for all wine. We'll do this by dividing the dataset into *k* folds, or a certain number of equal divisions. The standard number is 10, so since our dataset has about 1,600 observations, each *fold* will have about 160 wine samples. The algorithm then takes a large majority of the folds and uses this subset to develop its lasso model as we did above. Then it uses the remaning folds to "test" the model. The assumption is that, with large enough datasets, a randomly-divided dataset will generate enough variance between the "training" and "test" divisions that the "test" portion can approximate the differences of out-of-sample data.
+
+### A side-note on training and test data
+This assumption I just explained about gets at what I see as a fundamental problem of applying machine-learning techniques to development problems: heterogeneity in data availability. Let's use an invented example. Let's say I want to predict likelihood of forest fires based on satellite images. I collect my data using the best publicly available images from NASA or NOAA that I can find, develop my theory of change, and maybe use lasso to fine-tune my model. This is great, but suppose NASA has much better quality images of North America than anywhere else. Even if I train my model on images from around the world, can I really say that my "test" data is good enough to create valid model for terrain that has different tree species, different roof coverings, and other differences that aren't captured in the lesser-quality images?
+
+## Back to Cross-validation
+
+Lassopack also includes a cross-validation command called **cvlasso** that works very similarly to **lasso2**. We'll run this command, and also capture the selected varialbes in a global so we can run a better OLS command than last time. Keep in mind that if you type
+
+```{stata, nooutput}
+help cvlasso
+```
+you'll see that you can ajust the number of k-folds in the options.
+
+```{stata}
+cvlasso 		quality ${winevars}, plotcv seed(123) lopt alpha(1) postest
+global 			lassovars = e(selected)
+```
+Notice how the graph now is different: we see the natural log of lambda (indicated by a red line) that generated the model with the lowest error. Notice that the corss-validation method gave us a different ideal lambda value: `{stata} %9.1f e(lopt)'. Since we stored the variables the cvlasso command selected, we can run OLS with these variables with
+```{stata}
+reg 			quality 	${lassovars}
+```
+Now that we have significance values, we can look and see which chemical components are strong predictors of quality.
+
+## Ridge
+
+Recall that ridge algorithms operate very similarly to lasso ones. The main differences is that, due to squared constraint term, no coveriates will every be *completely* dropped from the model; "unimportant" covariates will only see their coefficents reduced to near-zero. 
