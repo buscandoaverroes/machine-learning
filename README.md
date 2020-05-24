@@ -1,5 +1,5 @@
-# machine-learning
-A place for sharing ML knowledge among SFS students and recent grads
+# Machine Learning Repository
+A place for sharing ML knowledge among SFS students and recent grads.
 
 ## Introduction
 When I was a student at SFS I fell in love with machine learning. It makes sense, given that decisions once handled only by....  It's technically difficult, often misunderstood, and it raises so many ethical questions. I wanted to understand all of these things,
