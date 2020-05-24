@@ -63,20 +63,26 @@ help lasso2
 If you look at the help file, you'll see that we need to tell Stata in order to make the command run: 1) a dependent variable, 2) and a list of candidate explanatory variables from which the algorithm will select the "best fit" model. If we browse, we see that **quality** is the main outcome variable. Let's create a global called **winevars** to store all of the potential explanatory variables.
 
 ```{stata, nooutput}
-global 	winevars 	fixedacidity volatileacidity citricacid residualsugar chlorides freesulfurdioxide totalsulfurdioxide ph sulphates alcohol
+global 	winevars 	fixedacidity volatileacidity ///
+					citricacid residualsugar
+ 					chlorides freesulfurdioxide ///
+					totalsulfurdioxide ph sulphates alcohol
 ```
 
 Now let's run our lasso command. Remember that lasso is an algorithm that selects explanatory variables as a function of lamba, a coefficient "penalty". The one option worth noting with this command is: alpha(1). This tells Stata to run a **lasso** algorithm as opposed to ridge (see more explanation in the theory file). I'll include other options that you can see explained in the do file.
 
 ```{stata}
-lasso2 quality ${winevars}, plotpath(lambda) plotlabel plotvar(${winevars}) plotopt(legend(on)) alpha(1)
+lasso2 quality ${winevars} ///
+				, plotpath(lambda) plotlabel ///
+				plotvar(${winevars}) ///
+				plotopt(legend(on)) alpha(1)
 ```
 
 If we take a look at the full table, we notice that as lambda decreases, more variables are added to our model. (This is because the "pentalty" or adding additional variables decreases as lambda decreases.) We can see this trend by looking at the generated output graph. As lambda increases, the coefficents for our covariates decreases until they reach 0 -- that is, when they are dropped from the model all together. But notice how some variables, such as **citricacid** "drop off" quicker than others, such as **volatileacidity**. One might interpret this as an indication that variables that are "slower" to drop off are better predictors of wine quality; this may be a general rule of thumb but is not always true. The iteration higlighted with a **"*"** will indicate the model with the lowest error (as measured by ebic). 7 variables are included in this model. Let's note the value of lambda that gave us our lowest "error": 51.99287. This is our "selected lambda"
 
 Our next command will run standard OLS with the 7 variable selected by the lasso algorithm. It won't give us the full output we're used to with **reg**, but it will at least give us the value of the coefficients:
 ```{stata}
-lasso2, 		lic(ebic)
+lasso2, lic(ebic)
 ```
 
 ## Cross-Validation
@@ -96,12 +102,13 @@ help cvlasso
 you'll see that you can ajust the number of k-folds in the options.
 
 ```{stata}
-cvlasso 		quality ${winevars}, plotcv seed(123) lopt alpha(1) postest
-global 			lassovars = e(selected)
+cvlasso 	quality ${winevars} ///
+			, plotcv seed(123) lopt alpha(1) postest
+global 		lassovars = e(selected)
 ```
-Notice how the graph now is different: we see the natural log of lambda (indicated by a red line) that generated the model with the lowest error. Notice that the corss-validation method gave us a different ideal lambda value: `{stata} %9.1f e(lopt)'. Since we stored the variables the cvlasso command selected, we can run OLS with these variables with
+Notice how the graph now is different: we see the natural log of lambda (indicated by a red line) that generated the model with the lowest error. Notice that the corss-validation method gave us a different ideal lambda value. Since we stored the variables the cvlasso command selected, we can run OLS with these variables with
 ```{stata}
-reg 			quality 	${lassovars}
+reg 		quality 	${lassovars}
 ```
 Now that we have significance values, we can look and see which chemical components are strong predictors of quality.
 
@@ -117,17 +124,24 @@ import delimited using "https://web.stanford.edu/~hastie/ElemStatLearn/datasets/
 We'll follow the steps above, except we'll tell stata to set *alpha=0* in the options, which indicates a ridge regression. **Lpsa** is our outcome variable of interest, and we'll group the explanatory variables in a global like last time. Let's run a lasso before ridge so we can compare.
 
 ```{stata}
-global 			rhsvars 	lcavol lweight age lbph svi lcp gleason pgg45
-lasso2 			lpsa ${rhsvars}	, plotpath(lambda) plotlabel plotvar(${rhsvars}) plotopt(legend(on)) alpha(1) lic(ebic) postresults long
-global 				lpsalasso  = e(selected)		/* store the variables selected by lasso */
-graph export 		"lpsa-lasso-graph.png", replace
+global 		rhsvars lcavol lweight ///
+					age lbph svi lcp gleason pgg45
+lasso2 		lpsa ${rhsvars}	, plotpath(lambda) plotlabel ///
+				plotvar(${rhsvars}) ///
+				plotopt(legend(on)) alpha(1) ///
+				lic(ebic) postresults long
+global 				lpsalasso  = e(selected)
+graph export 		"output/lpsa-lasso-graph.png", replace
 ```
 Note our selected lambda value, and that we have three covariates with that value. Now let's run the same selection of variables with ridge.
 
 ```{stata}
-lasso2 				lpsa ${rhsvars}	, plotpath(lambda) plotlabel plotvar(${rhsvars}) plotopt(legend(on)) alpha(0) lic(ebic) postresults long
+lasso2 		lpsa ${rhsvars}	, plotpath(lambda) plotlabel ///
+					plotvar(${rhsvars}) ///
+					plotopt(legend(on)) alpha(0) ///
+					lic(ebic) postresults long
 global 				lpsaridge  = e(selected)
-graph export 		"lpsa-ridge-graph.png", replace
+graph export 		"output/lpsa-ridge-graph.png", replace
 ```
 Notice how the ridge graph coefficent paths all approach zero as lambda approaches infinity, but never actually reach it. Likewise, if we compare the two following regressions with the lasso- and ridge-selected variables, we notice that the ridge regression includes all variables.
 ```{stata}

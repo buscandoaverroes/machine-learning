@@ -62,7 +62,7 @@ import delimited using ///
 							alpha(1) /// 				/* where =1 means lasso technique, 0 means ridge */
 							long						/* turns on full output  */
 
-	graph export 	"${output}/wine-lasso-path.png", replace
+	graph export 	"Output/wine-lasso-path.png", replace
 
 	lasso2, 		lic(ebic)							/* where lambda == 36.06796228930389 */
 
@@ -103,7 +103,7 @@ import delimited using ///
 							long						/* turns on full output  */
 	global 				lpsalasso  = e(selected)		/* store the variables selected by lasso */
 
-	graph export 		"lpsa-lasso-graph.png", replace
+	graph export 		"$output/lpsa-lasso-graph.png", replace
 
 	* now try ridge
 	lasso2 			lpsa ///							/* outcome variable, continuous */
@@ -118,7 +118,7 @@ import delimited using ///
 							long						/* turns on full output  */
 	global 				lpsaridge  = e(selected)		/* store the variables selected by lasso */
 
-	graph export 		"lpsa-ridge-graph.png", replace
+	graph export 		"$output/lpsa-ridge-graph.png", replace
 
 	eststo lasso: reg lpsa ${lpsalasso}
 	eststo ridge: reg lpsa ${lpsaridge}
