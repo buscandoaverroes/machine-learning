@@ -11,6 +11,12 @@
 
 if (0) {
 
+* 0. Global settings
+	/*You should change these paths to where you want them on your computer.*/
+
+	* output folder
+	global 	output 	"/Users/tommosher/Documents/GitHub/machine-learning/output/"
+
 * 1. Download packages _____________________________________________________________________________
 
 	ssc install pdslasso ///
@@ -56,6 +62,8 @@ import delimited using ///
 							alpha(1) /// 				/* where =1 means lasso technique, 0 means ridge */
 							long						/* turns on full output  */
 
+	graph export 	"${output}/wine-lasso-path.png", replace
+
 	lasso2, 		lic(ebic)							/* where lambda == 36.06796228930389 */
 
 * cross validation
@@ -90,12 +98,12 @@ import delimited using ///
 							plotvar(${rhsvars}) ///		/* tells stata to plot all the explanatory vars */
 							plotopt(legend(on)) ///		/* turns the legend on beneath the graph */
 							alpha(1) /// 				/* where =1 means lasso technique, 0 means ridge */
+							postresults ///
+							lic(ebic) ///
 							long						/* turns on full output  */
-	return list // why not any return estimates??
-	global 				lpsalasso =  e(selected)		/* store the variables selected by lasso */
+	global 				lpsalasso  = e(selected)		/* store the variables selected by lasso */
 
 	graph export 		"lpsa-lasso-graph.png", replace
-	lasso2,				lic(ebic)
 
 	* now try ridge
 	lasso2 			lpsa ///							/* outcome variable, continuous */
@@ -105,12 +113,12 @@ import delimited using ///
 							plotvar(${rhsvars}) ///		/* tells stata to plot all the explanatory vars */
 							plotopt(legend(on)) ///		/* turns the legend on beneath the graph */
 							alpha(0) /// 				/* where =1 means lasso technique, 0 means ridge */
+							lic(ebic) ///
+							postresults ///
 							long						/* turns on full output  */
 	global 				lpsaridge  = e(selected)		/* store the variables selected by lasso */
 
 	graph export 		"lpsa-ridge-graph.png", replace
-	lasso2,				lic(ebic)
 
-	macro list
 	eststo lasso: reg lpsa ${lpsalasso}
-	eststo ridge: reg lpsa ${lpsardige}
+	eststo ridge: reg lpsa ${lpsaridge}

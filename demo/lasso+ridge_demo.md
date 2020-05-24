@@ -107,4 +107,30 @@ Now that we have significance values, we can look and see which chemical compone
 
 ## Ridge
 
-Recall that ridge algorithms operate very similarly to lasso ones. The main differences is that, due to squared constraint term, no coveriates will every be *completely* dropped from the model; "unimportant" covariates will only see their coefficents reduced to near-zero. 
+Recall that ridge operates very similarly to lasso. The main differences is that, due to squared constraint term, no coveriates will every be *completely* dropped from the model; "unimportant" covariates will only see their coefficents reduced to near-zero.
+
+Let's use a new dataset to explore ridge. This one from Prof. Hastie for predicting rates of prostate cancer. (Btw, his website is here for more info and datasets: http://web.stanford.edu/~hastie/pub.htm)
+
+```{stata, nooutput}
+import delimited using "https://web.stanford.edu/~hastie/ElemStatLearn/datasets/prostate.data", clear
+```
+We'll follow the steps above, except we'll tell stata to set *alpha=0* in the options, which indicates a ridge regression. **Lpsa** is our outcome variable of interest, and we'll group the explanatory variables in a global like last time. Let's run a lasso before ridge so we can compare.
+
+```{stata}
+global 			rhsvars 	lcavol lweight age lbph svi lcp gleason pgg45
+lasso2 			lpsa ${rhsvars}	, plotpath(lambda) plotlabel plotvar(${rhsvars}) plotopt(legend(on)) alpha(1) lic(ebic) postresults long
+global 				lpsalasso  = e(selected)		/* store the variables selected by lasso */
+graph export 		"lpsa-lasso-graph.png", replace
+```
+Note our selected lambda value, and that we have three covariates with that value. Now let's run the same selection of variables with ridge.
+
+```{stata}
+lasso2 				lpsa ${rhsvars}	, plotpath(lambda) plotlabel plotvar(${rhsvars}) plotopt(legend(on)) alpha(0) lic(ebic) postresults long
+global 				lpsaridge  = e(selected)
+graph export 		"lpsa-ridge-graph.png", replace
+```
+Notice how the ridge graph coefficent paths all approach zero as lambda approaches infinity, but never actually reach it. Likewise, if we compare the two following regressions with the lasso- and ridge-selected variables, we notice that the ridge regression includes all variables.
+```{stata}
+eststo lasso: reg lpsa ${lpsalasso}
+eststo ridge: reg lpsa ${lpsaridge}
+```
