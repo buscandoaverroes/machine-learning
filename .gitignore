@@ -80,6 +80,7 @@
 !/**/Output/**/*.xml
 !/**/Output/**/*.eps
 !/**/Output/**/*.svg
+!/**/Output/**/*.html
 
 #######################
 # Include all the files with passwords or tokens here. All files named
