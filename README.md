@@ -13,3 +13,4 @@ When I was a student at SFS I fell in love with machine learning. It makes sense
 <p>1. UC Irvine Machine Learning [Repo](http://archive.ics.uci.edu/ml/index.php).
 <p>2. Awesome Public Datasets via [GitHub](https://github.com/awesomedata/awesome-public-datasets#climate-weather)
 <p>3. World Bank Open Data via [GitHub](https://github.com/jpazvd/wbopendata) or the World Bank [website](https://data.worldbank.org/). Note that the former leads you to a World Bank-create Stata package that allows you to install publicly available data directly within Stata. In Stata, type "ssc install wbopendata".
+<p>4. The Capital Bikeshare [datasets](https://www.capitalbikeshare.com/system-data).
