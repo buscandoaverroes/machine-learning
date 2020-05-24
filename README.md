@@ -2,7 +2,7 @@
 A place for sharing ML knowledge among SFS students and recent grads.
 
 ## Introduction
-When I was a student at SFS I fell in love with machine learning. It makes sense, given that decisions once handled only by....  It's technically difficult, often misunderstood, and it raises so many ethical questions. I wanted to understand all of these things,
+When I was a student at SFS I fell in love with machine learning.  It's technically difficult, often misunderstood, and it raises so many ethical questions. I wanted to understand all of these things, so I created this repository for SFS students/recent grads to collaborate on Machine Learning stuff.
 
 ## General ML resources/things I've come across
 <p>Basically start with anything by [Susan Athey](https://athey.people.stanford.edu/research).
