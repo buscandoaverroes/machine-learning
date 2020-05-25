@@ -25,7 +25,7 @@
 
    *Install all packages that this project requires:
    *(Note that this never updates outdated versions of already installed commands, to update commands use adoupdate)
-   local user_commands ietoolkit estout mdesc      
+   local user_commands ietoolkit estout mdesc unique
    foreach command of local user_commands {
        cap which `command'
        if _rc == 111 {
@@ -64,7 +64,7 @@
 
    if $user == 1 {
        global dataWorkFolder 	"/Users/tommosher/Documents/dta/bikeshare"
-	   global scripts		"/Users/tommosher/Documents/GitHub/machine-learning/bikeshare"
+	   global GitHub			"/Users/tommosher/Documents/GitHub/machine-learning/bikeshare"
    }
 
 
@@ -90,7 +90,7 @@
 *iefolder*1*FolderGlobals*encrypted*********************************************
 *iefolder will not work properly if the line above is edited
 
-   global encryptFolder          "$dataWorkFolder/EncryptedData"
+   global scripts          		 "${GitHub}/scripts"
 
 *iefolder*1*FolderGlobals*endRounds*********************************************
 *iefolder will not work properly if the line above is edited
