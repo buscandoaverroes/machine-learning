@@ -70,8 +70,6 @@
 # Text files
 !/**/*.txt
 
-# HTML
-!/**/*.html
 
 #######################
 # Include some additional file formats in any output folder. You might have
@@ -79,7 +77,6 @@
 # project, but we strongly recommend that you only include these files in
 # a subset of the folders where you are certain no private data is ever stored.
 !/**/Output/**/*.svg
-!/**/demo/**/*.html
 !/**/theory/**/*.pdf
 
 #######################

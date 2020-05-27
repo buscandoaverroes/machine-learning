@@ -94,7 +94,7 @@ Use long option for full output.
 Type e.g. lasso2, lic(ebic) to run the model selected by EBIC.
 
 </code></pre>
-<p><img src="Graph4.svg" ></p>
+<p><img src="Graph12.svg" ></p>
 <p>If we take a look at the full table, we notice that as lambda decreases, more variables are added to our model. (This is because the &ldquo;pentalty&rdquo; or adding additional variables decreases as lambda decreases.) We can see this trend by looking at the generated output graph. As lambda increases, the coefficents for our covariates decreases until they reach 0 &ndash; that is, when they are dropped from the model all together. But notice how some variables, such as <strong>citricacid</strong> &ldquo;drop off&rdquo; quicker than others, such as <strong>volatileacidity</strong>. One might interpret this as an indication that variables that are &ldquo;slower&rdquo; to drop off are better predictors of wine quality; this may be a general rule of thumb but is not always true. The iteration higlighted with a <strong>&ldquo;*&rdquo;</strong> will indicate the model with the lowest error (as measured by ebic). 7 variables are included in this model. Let&rsquo;s note the value of lambda that gave us our lowest &ldquo;error&rdquo;: 51.99287. This is our &ldquo;selected lambda&rdquo;</p>
 <p>Our next command will run standard OLS with the 7 variable selected by the lasso algorithm. It won&rsquo;t give us the full output we&rsquo;re used to with <strong>reg</strong>, but it will at least give us the value of the coefficients:</p>
 <pre><code class="language-{stata}">. lasso2, lic(ebic)
@@ -250,7 +250,7 @@ Estimate lasso with lambda=56.374 (lopt).
 . global          lassovars = e(selected)
 
 </code></pre>
-<p><img src="Graph5.svg" > Notice how the graph now is different: we see the natural log of lambda (indicated by a red line) that generated the model with the lowest error. Notice that the corss-validation method gave us a different ideal lambda value. Since we stored the variables the cvlasso command selected, we can run OLS with these variables with</p>
+<p><img src="Graph13.svg" > Notice how the graph now is different: we see the natural log of lambda (indicated by a red line) that generated the model with the lowest error. Notice that the corss-validation method gave us a different ideal lambda value. Since we stored the variables the cvlasso command selected, we can run OLS with these variables with</p>
 <pre><code class="language-{stata}">. reg             quality         ${lassovars}
 
       Source |       SS           df       MS      Number of obs   =     1,599
@@ -411,11 +411,10 @@ Plotting options ignored.
 . global                          lpsalasso  = e(selected)
 
 . graph export            &quot;output/lpsa-lasso-graph.png&quot;, replace
-(note: file output/lpsa-lasso-graph.png not found)
 (file output/lpsa-lasso-graph.png written in PNG format)
 
 </code></pre>
-<p><img src="Graph6.svg" > Note our selected lambda value, and that we have three covariates with that value. Now let&rsquo;s run the same selection of variables with ridge.</p>
+<p><img src="Graph14.svg" > Note our selected lambda value, and that we have three covariates with that value. Now let&rsquo;s run the same selection of variables with ridge.</p>
 <pre><code class="language-{stata}">. lasso2          lpsa ${rhsvars} , plotpath(lambda) plotlabel ///
 &gt;                                         plotvar(${rhsvars}) ///
 &gt;                                         plotopt(legend(on)) alpha(0) ///
@@ -552,11 +551,10 @@ Plotting options ignored.
 . global                          lpsaridge  = e(selected)
 
 . graph export            &quot;output/lpsa-ridge-graph.png&quot;, replace
-(note: file output/lpsa-ridge-graph.png not found)
 (file output/lpsa-ridge-graph.png written in PNG format)
 
 </code></pre>
-<p><img src="Graph7.svg" > Notice how the ridge graph coefficent paths all approach zero as lambda approaches infinity, but never actually reach it. Likewise, if we compare the two following regressions with the lasso- and ridge-selected variables, we notice that the ridge regression includes all variables.</p>
+<p><img src="Graph15.svg" > Notice how the ridge graph coefficent paths all approach zero as lambda approaches infinity, but never actually reach it. Likewise, if we compare the two following regressions with the lasso- and ridge-selected variables, we notice that the ridge regression includes all variables.</p>
 <pre><code class="language-{stata}">. eststo lasso: reg lpsa ${lpsalasso}
 
       Source |       SS           df       MS      Number of obs   =        97

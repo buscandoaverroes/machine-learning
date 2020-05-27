@@ -7,3 +7,8 @@
 	stmd 	"`repo'/lasso+ridge_demo.md" ///
 				, saving("`repo'/lasso+ridge_demo.html") ///
 				nostop replace
+
+* convert source file into html using dyndoc.
+	dyndoc 	"`repo'/lasso+ridge_demo.md" ///
+				, saving("`repo'/lasso+ridge_demo.html") ///
+				nostop replace embedimage

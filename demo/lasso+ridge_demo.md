@@ -1,6 +1,6 @@
-#A tutorial/walkthrough of basic lasso and ridge model selection techniques
+# A tutorial/walkthrough of basic lasso and ridge model selection techniques
 
-This is a stylized version of a lasso and ridge commands in Stata. The best way to follow along is to download the accompanying "lasso+ridge.do" script which includes on the Stata commands from this file. Be sure to change the file paths to match those of your computer.
+This is a stylized version of a lasso and ridge commands in Stata. The best way to follow along is to download the accompanying "lasso+ridge.do" script which includes on the Stata commands from this file. Be sure to change the file paths to match those of your computer. The PDF of the this document with output is also available in this folder
 
 ## Introduction
 
