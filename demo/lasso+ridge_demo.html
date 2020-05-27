@@ -43,8 +43,9 @@
 </code></pre>
 <h2><a href="#lasso" id="lasso">Lasso</a></h2>
 <p>Great, but what happens if we have a dataset about which we know very little? Let&rsquo;s take a look at this one about wine quality from the UCI machine learning repository. When you find a dataset you should always keep in mind what the owners allow you to do with it &ndash; here we&rsquo;re ok to use it for research purposes as long as we cite it, so we will: P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis. Modeling wine preferences by data mining from physicochemical properties. In Decision Support Systems, Elsevier, 47(4):547-553, 2009.</p>
-<pre><code class="language-{stata,">. import delimited using &quot;http://archive.ics.uci.edu/ml/machine-learning-databas
+<pre><code class="language-{stata}">. import delimited using &quot;http://archive.ics.uci.edu/ml/machine-learning-databas
 &gt; es/wine-quality/winequality-red.csv&quot; , clear
+(12 vars, 1,599 obs)
 
 </code></pre>
 <p>Great &ndash; now let&rsquo;s describe dataset:</p>
@@ -59,19 +60,19 @@ Sorted by:
 </code></pre>
 <p>Looks like each observation is a wine sample, and we have 12 variables, including <strong>quality</strong> that tells us how &ldquo;good&rdquo; the wine is. Let&rsquo;s see if we can predict quality from the other variables at our disposal. I know nothing about the chemistry of wine, so I can&rsquo;t use my economic background to help me produce any sort of story. We&rsquo;ll use lasso to help us with <strong>model selection</strong>: it will tell us which variables to include minimize the sum of the error term.</p>
 <p>We&rsquo;ll use the command called <strong>lasso2</strong> that we downloaded above. We&rsquo;ll focus on model selection here, but I recommend you check out the package website for all that it can do: <a href="https://statalasso.github.io/docs/lassopack/">https://statalasso.github.io/docs/lassopack/</a>. To see the documentation, type</p>
-<pre><code class="language-{stata,">. help lasso2
+<pre><code class="language-{stata}">. help lasso2
+--Break--
+r(1);
 
 </code></pre>
-<p><img src="Graph10.svg" ></p>
 <p>If you look at the help file, you&rsquo;ll see that we need to tell Stata in order to make the command run: 1) a dependent variable, 2) and a list of candidate explanatory variables from which the algorithm will select the &ldquo;best fit&rdquo; model. If we browse, we see that <strong>quality</strong> is the main outcome variable. Let&rsquo;s create a global called <strong>winevars</strong> to store all of the potential explanatory variables.</p>
-<pre><code class="language-{stata,">. global  winevars        fixedacidity volatileacidity ///
+<pre><code class="language-{stata}">. global  winevars        fixedacidity volatileacidity ///
 &gt;                                         citricacid residualsugar        ///
 &gt;                                         chlorides freesulfurdioxide ///
 &gt;                                         totalsulfurdioxide ph sulphates alcoho
 &gt; l
 
 </code></pre>
-<p><img src="Graph11.svg" ></p>
 <p>Now let&rsquo;s run our lasso command. Remember that lasso is an algorithm that selects explanatory variables as a function of lamba, a coefficient &ldquo;penalty&rdquo;. The one option worth noting with this command is: alpha(1). This tells Stata to run a <strong>lasso</strong> algorithm as opposed to ridge (see more explanation in the theory file). I&rsquo;ll include other options that you can see explained in the do file.</p>
 <pre><code class="language-{stata}">. lasso2 quality ${winevars} ///
 &gt;                                 , plotpath(lambda) plotlabel ///
@@ -111,7 +112,7 @@ Use long option for full output.
 Type e.g. lasso2, lic(ebic) to run the model selected by EBIC.
 
 </code></pre>
-<p><img src="Graph12.svg" ></p>
+<p><img src="Graph.svg" ></p>
 <p>If we take a look at the full table, we notice that as lambda decreases, more variables are added to our model. (This is because the &ldquo;pentalty&rdquo; or adding additional variables decreases as lambda decreases.) We can see this trend by looking at the generated output graph. As lambda increases, the coefficents for our covariates decreases until they reach 0 &ndash; that is, when they are dropped from the model all together. But notice how some variables, such as <strong>citricacid</strong> &ldquo;drop off&rdquo; quicker than others, such as <strong>volatileacidity</strong>. One might interpret this as an indication that variables that are &ldquo;slower&rdquo; to drop off are better predictors of wine quality; this may be a general rule of thumb but is not always true. The iteration higlighted with a <strong>&ldquo;*&rdquo;</strong> will indicate the model with the lowest error (as measured by ebic). 7 variables are included in this model. Let&rsquo;s note the value of lambda that gave us our lowest &ldquo;error&rdquo;: 51.99287. This is our &ldquo;selected lambda&rdquo;</p>
 <p>Our next command will run standard OLS with the 7 variable selected by the lasso algorithm. It won&rsquo;t give us the full output we&rsquo;re used to with <strong>reg</strong>, but it will at least give us the value of the coefficients:</p>
 <pre><code class="language-{stata}">. lasso2, lic(ebic)
@@ -279,7 +280,7 @@ totalsulfurdiox~e |      -0.0028702     -0.0034134
 . global          lassovars = e(selected)
 
 </code></pre>
-<p><img src="Graph13.svg" > Notice how the graph now is different: we see the natural log of lambda (indicated by a red line) that generated the model with the lowest error. Notice that the corss-validation method gave us a different ideal lambda value. Since we stored the variables the cvlasso command selected, we can run OLS with these variables with</p>
+<p><img src="Graph1.svg" > Notice how the graph now is different: we see the natural log of lambda (indicated by a red line) that generated the model with the lowest error. Notice that the corss-validation method gave us a different ideal lambda value. Since we stored the variables the cvlasso command selected, we can run OLS with these variables with</p>
 <pre><code class="language-{stata}">. reg             quality         ${lassovars}
 
       Source |       SS           df       MS      Number of obs   =     1,599
@@ -450,7 +451,7 @@ Plotting options ignored.
 (file output/lpsa-lasso-graph.png written in PNG format)
 
 </code></pre>
-<p><img src="Graph14.svg" > Note our selected lambda value, and that we have three covariates with that value. Now let&rsquo;s run the same selection of variables with ridge.</p>
+<p><img src="Graph2.svg" > Note our selected lambda value, and that we have three covariates with that value. Now let&rsquo;s run the same selection of variables with ridge.</p>
 <pre><code class="language-{stata}">. lasso2          lpsa ${rhsvars} , plotpath(lambda) plotlabel ///
 &gt;                                         plotvar(${rhsvars}) ///
 &gt;                                         plotopt(legend(on)) alpha(0) ///
@@ -590,7 +591,7 @@ Plotting options ignored.
 (file output/lpsa-ridge-graph.png written in PNG format)
 
 </code></pre>
-<p><img src="Graph15.svg" > Notice how the ridge graph coefficent paths all approach zero as lambda approaches infinity, but never actually reach it. Likewise, if we compare the two following regressions with the lasso- and ridge-selected variables, we notice that the ridge regression includes all variables.</p>
+<p><img src="Graph3.svg" > Notice how the ridge graph coefficent paths all approach zero as lambda approaches infinity, but never actually reach it. Likewise, if we compare the two following regressions with the lasso- and ridge-selected variables, we notice that the ridge regression includes all variables.</p>
 <pre><code class="language-{stata}">. eststo lasso: reg lpsa ${lpsalasso}
 
       Source |       SS           df       MS      Number of obs   =        97
