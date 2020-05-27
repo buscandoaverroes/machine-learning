@@ -62,16 +62,16 @@ Sorted by:
 <pre><code class="language-{stata,">. help lasso2
 
 </code></pre>
+<p><img src="Graph10.svg" ></p>
 <p>If you look at the help file, you&rsquo;ll see that we need to tell Stata in order to make the command run: 1) a dependent variable, 2) and a list of candidate explanatory variables from which the algorithm will select the &ldquo;best fit&rdquo; model. If we browse, we see that <strong>quality</strong> is the main outcome variable. Let&rsquo;s create a global called <strong>winevars</strong> to store all of the potential explanatory variables.</p>
 <pre><code class="language-{stata,">. global  winevars        fixedacidity volatileacidity ///
-&gt;                                         citricacid residualsugar
-
-.                                         chlorides freesulfurdioxide ///
+&gt;                                         citricacid residualsugar        ///
+&gt;                                         chlorides freesulfurdioxide ///
 &gt;                                         totalsulfurdioxide ph sulphates alcoho
 &gt; l
-command chlorides is unrecognized
 
 </code></pre>
+<p><img src="Graph11.svg" ></p>
 <p>Now let&rsquo;s run our lasso command. Remember that lasso is an algorithm that selects explanatory variables as a function of lamba, a coefficient &ldquo;penalty&rdquo;. The one option worth noting with this command is: alpha(1). This tells Stata to run a <strong>lasso</strong> algorithm as opposed to ridge (see more explanation in the theory file). I&rsquo;ll include other options that you can see explained in the do file.</p>
 <pre><code class="language-{stata}">. lasso2 quality ${winevars} ///
 &gt;                                 , plotpath(lambda) plotlabel ///
@@ -80,35 +80,57 @@ command chlorides is unrecognized
 
   Knot|  ID     Lambda    s      L1-Norm        EBIC     R-sq   | Action
 ------+---------------------------------------------------------+---------------
-     1|   1 1008.34183     1     0.00000   -677.11968   0.0000  | Added _cons.
-     2|   2  918.76352     2     0.15648   -711.69883   0.0259  | Added
+     1|   1 1229.36594     1     0.00000   -677.11968   0.0000  | Added _cons.
+     2|   2 1120.15246     2     0.03206   -732.51296   0.0385  | Added
+      |                                                         | alcohol.
+     3|   4  929.97025     3     0.11921   -832.91880   0.1012  | Added
       |                                                         | volatileacidit
 &gt; y.
-     3|  28   81.78971     3     1.61823   -925.16078   0.1516  | Added
+     4|  11  484.88726     4     0.87514  -1132.93632   0.2584  | Added
+      |                                                         | sulphates.
+     5|  18  252.82062     5     1.51373  -1254.76666   0.3159  | Added
+      |                                                         | totalsulfurdio
+&gt; xide.
+     6|  22  174.25945     6     1.82470  -1283.78695   0.3313  | Added
+      |                                                         | chlorides.
+     7|  23  158.77872     7     2.01970  -1285.43610   0.3351  | Added
       |                                                         | fixedacidity.
-     4|  39   29.39370     4     1.69937   -920.45671   0.1530  | Added
+     8|  24  144.67325     8     2.21970  -1286.25966   0.3385  | Added ph.
+     9|  33   62.62560     7     3.61653  -1330.74797   0.3537  | Removed
+      |                                                         | fixedacidity.
+    10|  36   47.37397     8     3.87439  -1328.20385   0.3556  | Added
+      |                                                         | freesulfurdiox
+&gt; ide.
+    11|  41   29.75223     9     4.18108  -1326.68990   0.3580  | Added
       |                                                         | residualsugar.
-     5|  59    4.57271     5     1.74881   -913.67292   0.1533  | Added
+    12|  44   22.50647    10     4.32028  -1321.18095   0.3587  | Added
       |                                                         | citricacid.
+    13|  47   17.02532    11     4.46720  -1315.38612   0.3594  | Added
+      |                                                         | fixedacidity.
 Use long option for full output.
 Type e.g. lasso2, lic(ebic) to run the model selected by EBIC.
 
 </code></pre>
-<p><img src="Graph.svg" ></p>
+<p><img src="Graph12.svg" ></p>
 <p>If we take a look at the full table, we notice that as lambda decreases, more variables are added to our model. (This is because the &ldquo;pentalty&rdquo; or adding additional variables decreases as lambda decreases.) We can see this trend by looking at the generated output graph. As lambda increases, the coefficents for our covariates decreases until they reach 0 &ndash; that is, when they are dropped from the model all together. But notice how some variables, such as <strong>citricacid</strong> &ldquo;drop off&rdquo; quicker than others, such as <strong>volatileacidity</strong>. One might interpret this as an indication that variables that are &ldquo;slower&rdquo; to drop off are better predictors of wine quality; this may be a general rule of thumb but is not always true. The iteration higlighted with a <strong>&ldquo;*&rdquo;</strong> will indicate the model with the lowest error (as measured by ebic). 7 variables are included in this model. Let&rsquo;s note the value of lambda that gave us our lowest &ldquo;error&rdquo;: 51.99287. This is our &ldquo;selected lambda&rdquo;</p>
 <p>Our next command will run standard OLS with the 7 variable selected by the lasso algorithm. It won&rsquo;t give us the full output we&rsquo;re used to with <strong>reg</strong>, but it will at least give us the value of the coefficients:</p>
 <pre><code class="language-{stata}">. lasso2, lic(ebic)
 
-Use lambda=89.76411116338411 (selected by EBIC).
+Use lambda=51.99287139699468 (selected by EBIC).
 
 ---------------------------------------------------
          Selected |           Lasso   Post-est OLS
 ------------------+--------------------------------
-  volatileacidity |      -1.6046319     -1.7614378
+  volatileacidity |      -1.0340199     -1.0381945
+        chlorides |      -1.4227042     -2.0022838
+totalsulfurdiox~e |      -0.0019225     -0.0023721
+               ph |      -0.2931852     -0.4351831
+        sulphates |       0.7607917      0.8886801
+          alcohol |       0.2817986      0.2906738
 ------------------+--------------------------------
    Partialled-out*|
 ------------------+--------------------------------
-            _cons |       6.4829802      6.5657455
+            _cons |       3.9284465      4.2957318
 ---------------------------------------------------
 
 </code></pre>
@@ -129,143 +151,157 @@ K-fold cross-validation with 10 folds. Elastic net with alpha=1.
 Fold 1 2 3 4 5 6 7 8 9 10 
           |         Lambda           MSPE       st. dev.
 ----------+---------------------------------------------
-         1|      1008.3418      .65131479       .0223197  
-         2|      918.76352      .63627149      .02174724  
-         3|      837.14311      .62217786      .02076667  
-         4|      762.77362      .61047734      .01994615  
-         5|      695.01091      .60076361      .01925827  
-         6|      633.26806      .59269932      .01868041  
-         7|      577.01027       .5860044      .01819395  
-         8|      525.75027      .58044634      .01778355  
-         9|      479.04406      .57583211      .01743655  
-        10|      436.48711      .57200145      .01714248  
-        11|       397.7108      .56882131      .01689271  ^
-        12|      362.37927      .56618122      .01668009  
-        13|      330.18649      .56398949      .01649866  
-        14|      300.85363      .56216998      .01634351  
-        15|      274.12663      .56065948      .01621052  
-        16|      249.77397      .55940553      .01609626  
-        17|      227.58474      .55836456      .01599787  
-        18|      207.36674      .55750039      .01591295  
-        19|      188.94485      .55678302      .01583949  
-        20|      172.15951       .5561875       .0157758  
-        21|      156.86533      .55569314      .01572045  
-        22|      142.92985      .55528277      .01567224  
-        23|      130.23236       .5549518      .01562854  
-        24|      118.66287      .55472942      .01557949  
-        25|      108.12119      .55456506      .01553216  
-        26|      98.516001      .55444559       .0154905  
-        27|      89.764111      .55437042      .01545617  
-        28|      81.789715      .55430874      .01542484  
-        29|      74.523742      .55426189      .01539515  
-        30|      67.903258      .55423364      .01536928  
-        31|       61.87092      .55421047      .01535176  
-        32|      56.374478      .55419819      .01534066  *
-        33|      51.366325      .55420873      .01533232  
-        34|      46.803082      .55423424      .01532959  
-        35|      42.645225      .55426779      .01532958  
-        36|      38.856741       .5543072      .01532826  
-        37|      35.404815      .55434925       .0153272  
-        38|      32.259549      .55439109      .01532627  
-        39|        29.3937      .55443185      .01532555  
-        40|      26.782444      .55447149      .01532519  
-        41|      24.403166      .55450642      .01532603  
-        42|      22.235256      .55454039      .01532689  
-        43|      20.259937      .55457298      .01532778  
-        44|        18.4601      .55462753      .01534374  
-        45|      16.820156      .55469167      .01536667  
-        46|      15.325899      .55475153      .01538795  
-        47|      13.964389      .55479173      .01541062  
-        48|      12.723831      .55482881      .01542978  
-        49|      11.593481       .5548688      .01544855  
-        50|      10.563548       .5549268      .01547055  
-        51|      9.6251114      .55498171       .0154907  
-        52|       8.770043      .55503821      .01550849  
-        53|      7.9909366       .5550937      .01552424  
-        54|      7.2810438      .55514735      .01553824  
-        55|      6.6342159      .55519693      .01555107  
-        56|      6.0448505      .55524269      .01556283  
-        57|      5.5078426      .55528486      .01557359  
-        58|      5.0185411      .55532368      .01558345  
-        59|      4.5727077      .55535938      .01559247  
-        60|       4.166481      .55539215      .01560071  
-        61|      3.7963423      .55541975      .01560787  
-        62|      3.4590857      .55544561      .01561451  
-        63|      3.1517901      .55546934      .01562057  
-        64|      2.8717937      .55549109      .01562611  
-        65|      2.6166715      .55551102      .01563117  
-        66|      2.3842136      .55552927      .01563579  
-        67|      2.1724066      .55554597      .01564001  
-        68|       1.979416      .55556126      .01564387  
-        69|      1.8035701      .55557523      .01564739  
-        70|      1.6433459      .55558801       .0156506  
-        71|      1.4973556      .55559969      .01565353  
-        72|      1.3643347      .55561037       .0156562  
-        73|      1.2431309      .55562011      .01565864  
-        74|      1.1326946      .55562902      .01566087  
-        75|      1.0320691      .55563715       .0156629  
-        76|      .94038297      .55564457      .01566475  
-        77|      .85684194      .55565134      .01566643  
-        78|      .78072246      .55565752      .01566797  
-        79|      .71136523      .55566267      .01566922  
-        80|       .6481695      .55566738      .01567037  
-        81|      .59058791      .55567116      .01567174  
-        82|      .53812171      .55567459      .01567301  
-        83|      .49031646      .55567772      .01567417  
-        84|       .4467581      .55568057      .01567522  
-        85|      .40706934       .5556794      .01567693  
-        86|      .37090642       .5556814      .01567788  
-        87|      .33795612      .55568324      .01567874  
-        88|      .30793303      .55568491      .01567953  
-        89|       .2805771      .55568643      .01568025  
-        90|      .25565141      .55568782       .0156809  
-        91|      .23294004      .55568909      .01568149  
-        92|      .21224629      .55569025      .01568204  
-        93|      .19339092       .5556913      .01568253  
-        94|       .1762106      .55569226      .01568298  
-        95|      .16055654      .55569314      .01568339  
-        96|      .14629314      .55569394      .01568377  
-        97|      .13329686      .55569466      .01568411  
-        98|      .12145513      .55569533      .01568442  
-        99|      .11066539      .55569593       .0156847  
-       100|      .10083418      .55569648      .01568496  
+         1|      1229.3659      .65077866       .0224136  
+         2|      1120.1525      .62792033      .02181258  
+         3|      1020.6412       .6070669      .02094258  
+         4|      929.97025       .5874103       .0205783  
+         5|      847.35426      .56397203      .01931562  
+         6|      772.07764      .54408474       .0181137  
+         7|      703.48839      .52757376      .01708498  
+         8|      640.99242      .51386587       .0162064  
+         9|      584.04842      .50248518      .01545779  
+        10|      532.16317      .49301384      .01481433  
+        11|      484.88726      .48500471      .01423636  
+        12|      441.81121      .47697242       .0138183  
+        13|      402.56192      .46984836      .01352111  
+        14|      366.79943      .46393594        .013293  
+        15|      334.21398      .45902925      .01312089  
+        16|      304.52333      .45497734       .0129871  
+        17|      277.47032      .45169216      .01288373  
+        18|      252.82062      .44860531       .0127395  
+        19|      230.36073      .44575804      .01266945  
+        20|      209.89612      .44315179      .01267603  
+        21|      191.24953      .44115339       .0126832  
+        22|      174.25945      .43934693      .01269399  
+        23|      158.77872      .43719499      .01265673  
+        24|      144.67325      .43526388      .01262962  ^
+        25|      131.82088      .43349194       .0126529  
+        26|      120.11028      .43184632      .01269913  
+        27|      109.44001      .43039701      .01271566  
+        28|      99.717662      .42919343       .0127343  
+        29|      90.859019      .42819391      .01275424  
+        30|      82.787355      .42736383      .01277485  
+        31|      75.432754      .42667445      .01279565  
+        32|      68.731516       .4261019      .01281627  
+        33|      62.625598      .42562931      .01283761  
+        34|      57.062112      .42529325      .01287306  
+        35|      51.992871       .4249987      .01290869  
+        36|      47.373968      .42468615      .01296141  
+        37|      43.165395      .42437546      .01300111  
+        38|      39.330701      .42406713      .01302018  
+        39|      35.836669      .42382454       .0130389  
+        40|      32.653039      .42365306       .0130622  
+        41|      29.752233      .42355273       .0130849  
+        42|      27.109126      .42349803      .01310832  
+        43|      24.700826      .42346882      .01313051  
+        44|      22.506473      .42345028      .01315046  
+        45|       20.50706      .42344021      .01316775  *
+        46|      18.685269      .42344336      .01318352  
+        47|      17.025321      .42345655      .01319796  
+        48|      15.512839      .42347742      .01321111  
+        49|      14.134721      .42350378      .01322309  
+        50|      12.879031      .42353391      .01323401  
+        51|      11.734894      .42354737      .01324601  
+        52|      10.692398      .42353933      .01326039  
+        53|      9.7425148      .42353138       .0132751  
+        54|      8.8770167      .42352097      .01328714  
+        55|       8.088407      .42350734       .0132936  
+        56|      7.3698552      .42350264      .01330283  
+        57|      6.7151376      .42350727      .01331551  
+        58|      6.1185833      .42351302      .01332708  
+        59|      5.5750252      .42351955      .01333765  
+        60|      5.0797553      .42352438      .01334827  
+        61|      4.6284838      .42352916      .01335819  
+        62|      4.2173021      .42353426      .01336724  
+        63|      3.8426486      .42353952      .01337549  
+        64|      3.5012783      .42354484        .013383  
+        65|      3.1902344      .42355011      .01338986  
+        66|      2.9068227      .42355527       .0133961  
+        67|      2.6485886      .42356026       .0134018  
+        68|      2.4132953      .42356506      .01340699  
+        69|      2.1989048      .42356963      .01341172  
+        70|      2.0035602      .42357397      .01341603  
+        71|      1.8255694      .42357806      .01341996  
+        72|      1.6633908       .4235819      .01342354  
+        73|      1.5156198       .4235855      .01342681  
+        74|      1.3809763      .42358886      .01342978  
+        75|      1.2582942      .42359199      .01343249  
+        76|      1.1465108      .42359489      .01343496  
+        77|      1.0446579      .42359758      .01343722  
+        78|       .9518534      .42360008      .01343927  
+        79|      .86729337      .42360238      .01344114  
+        80|      .79024541       .4236045      .01344284  
+        81|      .72004219      .42360646      .01344439  
+        82|      .65607563      .42360826      .01344581  
+        83|      .59779168      .42360991       .0134471  
+        84|      .54468551      .42361144      .01344827  
+        85|      .49629715      .42361283      .01344934  
+        86|      .45220748      .42361411      .01345032  
+        87|      .41203461      .42361529      .01345121  
+        88|      .37543059      .42361636      .01345202  
+        89|      .34207838      .42361735      .01345276  
+        90|      .31168908      .42361825      .01345343  
+        91|      .28399948      .42361908      .01345404  
+        92|      .25876975      .42361983       .0134546  
+        93|      .23578136      .42362052      .01345511  
+        94|      .21483519      .42362115      .01345557  
+        95|      .19574982      .42362173      .01345599  
+        96|      .17835995      .42362225      .01345638  
+        97|      .16251494      .42362274      .01345673  
+        98|      .14807756      .42362317      .01345705  
+        99|      .13492276      .42362358      .01345734  
+       100|      .12293659      .42362394      .01345761  
 * lopt = the lambda that minimizes MSPE.
   Run model: cvlasso, lopt
 ^ lse = largest lambda for which MSPE is within one standard error of the
         minimal MSPE.
   Run model: cvlasso, lse
-Estimate lasso with lambda=56.374 (lopt).
+Estimate lasso with lambda=20.507 (lopt).
 
 ---------------------------------------------------
          Selected |           Lasso   Post-est OLS
 ------------------+--------------------------------
-     fixedacidity |       0.0038595      0.0119222
-  volatileacidity |      -1.6533470     -1.7317454
+  volatileacidity |      -1.0303012     -1.0815017
+       citricacid |      -0.0182698     -0.1426059
+    residualsugar |       0.0030948      0.0093998
+        chlorides |      -1.7797219     -1.9615892
+freesulfurdioxide |       0.0030169      0.0045912
+totalsulfurdiox~e |      -0.0028702     -0.0034134
+               ph |      -0.4142290     -0.5465107
+        sulphates |       0.8373421      0.8968997
+          alcohol |       0.2863251      0.2916526
 ------------------+--------------------------------
    Partialled-out*|
 ------------------+--------------------------------
-            _cons |       6.4765833      6.4508846
+            _cons |       4.2541763      4.6583179
 ---------------------------------------------------
 
 . global          lassovars = e(selected)
 
 </code></pre>
-<p><img src="Graph1.svg" > Notice how the graph now is different: we see the natural log of lambda (indicated by a red line) that generated the model with the lowest error. Notice that the corss-validation method gave us a different ideal lambda value. Since we stored the variables the cvlasso command selected, we can run OLS with these variables with</p>
+<p><img src="Graph13.svg" > Notice how the graph now is different: we see the natural log of lambda (indicated by a red line) that generated the model with the lowest error. Notice that the corss-validation method gave us a different ideal lambda value. Since we stored the variables the cvlasso command selected, we can run OLS with these variables with</p>
 <pre><code class="language-{stata}">. reg             quality         ${lassovars}
 
       Source |       SS           df       MS      Number of obs   =     1,599
--------------+----------------------------------   F(2, 1596)      =    144.32
-       Model |  159.610433         2  79.8052164   Prob &gt; F        =    0.0000
-    Residual |   882.55467     1,596  .552979117   R-squared       =    0.1532
--------------+----------------------------------   Adj R-squared   =    0.1521
-       Total |   1042.1651     1,598    .6521684   Root MSE        =    .74363
+-------------+----------------------------------   F(9, 1589)      =     99.39
+       Model |  375.359537         9  41.7066153   Prob &gt; F        =    0.0000
+    Residual |  666.805566     1,589  .419638493   R-squared       =    0.3602
+-------------+----------------------------------   Adj R-squared   =    0.3565
+       Total |   1042.1651     1,598    .6521684   Root MSE        =     .6478
 
 -------------------------------------------------------------------------------
       quality |      Coef.   Std. Err.      t    P&gt;|t|     [95% Conf. Interval]
 --------------+----------------------------------------------------------------
- fixedacidity |   .0119222   .0110529     1.08   0.281    -.0097576     .033602
-volatileaci~y |  -1.731745   .1074738   -16.11   0.000     -1.94255   -1.520941
-        _cons |   6.450885   .1212101    53.22   0.000     6.213137    6.688632
+volatileaci~y |  -1.081502   .1163884    -9.29   0.000    -1.309793   -.8532108
+   citricacid |  -.1426059   .1229263    -1.16   0.246    -.3837208    .0985089
+residualsugar |   .0093998   .0120188     0.78   0.434    -.0141746    .0329742
+    chlorides |  -1.961589   .4030404    -4.87   0.000    -2.752136   -1.171042
+freesulfurd~e |   .0045912   .0021574     2.13   0.033     .0003596    .0088228
+totalsulfur~e |  -.0034134   .0006982    -4.89   0.000    -.0047829    -.002044
+           ph |  -.5465107    .133194    -4.10   0.000    -.8077651   -.2852563
+    sulphates |   .8968997   .1104474     8.12   0.000     .6802618    1.113538
+      alcohol |   .2916526   .0172016    16.95   0.000     .2579123    .3253929
+        _cons |   4.658318   .4610666    10.10   0.000     3.753955    5.562681
 -------------------------------------------------------------------------------
 
 </code></pre>
@@ -414,7 +450,7 @@ Plotting options ignored.
 (file output/lpsa-lasso-graph.png written in PNG format)
 
 </code></pre>
-<p><img src="Graph2.svg" > Note our selected lambda value, and that we have three covariates with that value. Now let&rsquo;s run the same selection of variables with ridge.</p>
+<p><img src="Graph14.svg" > Note our selected lambda value, and that we have three covariates with that value. Now let&rsquo;s run the same selection of variables with ridge.</p>
 <pre><code class="language-{stata}">. lasso2          lpsa ${rhsvars} , plotpath(lambda) plotlabel ///
 &gt;                                         plotvar(${rhsvars}) ///
 &gt;                                         plotopt(legend(on)) alpha(0) ///
@@ -554,7 +590,7 @@ Plotting options ignored.
 (file output/lpsa-ridge-graph.png written in PNG format)
 
 </code></pre>
-<p><img src="Graph3.svg" > Notice how the ridge graph coefficent paths all approach zero as lambda approaches infinity, but never actually reach it. Likewise, if we compare the two following regressions with the lasso- and ridge-selected variables, we notice that the ridge regression includes all variables.</p>
+<p><img src="Graph15.svg" > Notice how the ridge graph coefficent paths all approach zero as lambda approaches infinity, but never actually reach it. Likewise, if we compare the two following regressions with the lasso- and ridge-selected variables, we notice that the ridge regression includes all variables.</p>
 <pre><code class="language-{stata}">. eststo lasso: reg lpsa ${lpsalasso}
 
       Source |       SS           df       MS      Number of obs   =        97

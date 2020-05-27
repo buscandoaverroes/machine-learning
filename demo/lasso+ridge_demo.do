@@ -62,7 +62,7 @@ import delimited using ///
 							alpha(1) /// 				/* where =1 means lasso technique, 0 means ridge */
 							long						/* turns on full output  */
 
-	graph export 	"Output/wine-lasso-path.png", replace
+	graph export 	"${output}/wine-lasso-path.png", replace
 
 	lasso2, 		lic(ebic)							/* where lambda == 36.06796228930389 */
 

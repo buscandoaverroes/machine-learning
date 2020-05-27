@@ -42,7 +42,7 @@ reg price	foreign weight
 
 Great, but what happens if we have a dataset about which we know very little? Let's take a look at this one about wine quality from the UCI machine learning repository. When you find a dataset you should always keep in mind what the owners allow you to do with it -- here we're ok to use it for research purposes as long as we cite it, so we will: P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis. Modeling wine preferences by data mining from physicochemical properties. In Decision Support Systems, Elsevier, 47(4):547-553, 2009.
 
-```{stata, nooutput}
+```{stata}
 import delimited using "http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv" , clear
 ```
 
@@ -56,15 +56,15 @@ Looks like each observation is a wine sample, and we have 12 variables, includin
 
 We'll use the command called **lasso2** that we downloaded above. We'll focus on model selection here, but I recommend you check out the package website for all that it can do: https://statalasso.github.io/docs/lassopack/. To see the documentation, type
 
-```{stata, nooutput}
+```{stata}
 help lasso2
 ```
 
 If you look at the help file, you'll see that we need to tell Stata in order to make the command run: 1) a dependent variable, 2) and a list of candidate explanatory variables from which the algorithm will select the "best fit" model. If we browse, we see that **quality** is the main outcome variable. Let's create a global called **winevars** to store all of the potential explanatory variables.
 
-```{stata, nooutput}
+```{stata}
 global 	winevars 	fixedacidity volatileacidity ///
-					citricacid residualsugar
+					citricacid residualsugar	///
  					chlorides freesulfurdioxide ///
 					totalsulfurdioxide ph sulphates alcohol
 ```
