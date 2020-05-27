@@ -148,3 +148,6 @@ Notice how the ridge graph coefficent paths all approach zero as lambda approach
 eststo lasso: reg lpsa ${lpsalasso}
 eststo ridge: reg lpsa ${lpsaridge}
 ```
+
+Oh, and the citation for the cancer data:
+Hastie, Tibshirani and Friedman. The Elements of Statistical Learning (2nd edition). (2009). Springer-Verlag. Accessed at https://web.stanford.edu/~hastie/ElemStatLearn/ on 26 May, 2020.

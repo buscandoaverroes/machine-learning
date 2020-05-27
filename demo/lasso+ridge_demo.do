@@ -46,7 +46,9 @@ import delimited using ///
  				"http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv" ///
  				, clear
 				*/
-
+	/*Wine Quality Dataset:
+	P. Cortez, A. Cerdeira, F. Almeida, T. Matos and J. Reis.
+Modeling wine preferences by data mining from physicochemical properties. In Decision Support Systems, Elsevier, 47(4):547-553, 2009.*/
 	import delimited using "/Users/tommosher/Documents/dta/repo-data/ml/wine/winequality-red.csv" ///
 					, clear
 	describe 		, short
@@ -82,6 +84,9 @@ import delimited using ///
 
 
 * Ridge
+
+/*Prostate Cancer dataset:
+Hastie, Tibshirani and Friedman. The Elements of Statistical Learning (2nd edition). (2009). Springer-Verlag. Accessed at https://web.stanford.edu/~hastie/ElemStatLearn/ on 26 May, 2020. */
 
 import delimited using ///
 				"https://web.stanford.edu/~hastie/ElemStatLearn/datasets/prostate.data" ///
