@@ -23,9 +23,12 @@
 *iefolder*0*End_StandardSettings************************************************
 *iefolder will not work properly if the line above is edited
 
+
+	if (0) {
+
    *Install all packages that this project requires:
    *(Note that this never updates outdated versions of already installed commands, to update commands use adoupdate)
-   local user_commands ietoolkit estout mdesc      
+   local user_commands ietoolkit estout mdesc blindschemes
    foreach command of local user_commands {
        cap which `command'
        if _rc == 111 {
@@ -36,7 +39,7 @@
    *Standardize settings accross users
    ieboilstart, version(15.1)          //Set the version number to the oldest version used by anyone in the project team
    `r(version)'                        //This line is needed to actually set the version from the command above
-
+	}
 *iefolder*1*FolderGlobals*******************************************************
 *iefolder will not work properly if the line above is edited
 
@@ -64,7 +67,7 @@
 
    if $user == 1 {
        global dataWorkFolder 	"/Users/tommosher/Documents/dta/bikeshare"
-	   global scripts		"/Users/tommosher/Documents/GitHub/machine-learning/bikeshare"
+	   global scripts			"/Users/tommosher/Documents/GitHub/machine-learning/bikeshare/scripts"
    }
 
 
@@ -137,7 +140,16 @@
 
    if (1) {
 	   do 	"${scripts}/import1.do"
+	   do 	"${scripts}/construct.do"
    }
 
 *iefolder*3*End_RunDofiles******************************************************
 *iefolder will not work properly if the line above is edited
+
+
+/*
+
+			to-do
+
+			map gps coordinates to street addresses
+			dummy if near metro 
