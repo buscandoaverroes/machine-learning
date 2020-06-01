@@ -137,10 +137,18 @@
 
 
 
+	* runs the import file: warning, takes ~ 10 min
+   if (0) {
+	   do 	"${scripts}/import1.do"
+   }
+
+
+   if (0) {
+	   do 	"${scripts}/construct.do"
+   }
 
    if (1) {
-	   do 	"${scripts}/import1.do"
-	   do 	"${scripts}/construct.do"
+	   do 	"${scripts}/append.do"
    }
 
 *iefolder*3*End_RunDofiles******************************************************
@@ -151,5 +159,12 @@
 
 			to-do
 
+			1. rerun everything.
+
+			write small script to take small random subset from each year to save time.
+
+			string match for station id
+
 			map gps coordinates to street addresses
-			dummy if near metro 
+			use the lat/long in april 2020 data
+			dummy if near metro */

@@ -16,7 +16,9 @@
 						 /* Note that this will eventually be converted into a loop. */
 
 	* settings
-	local source 				= 2
+	local source 				= 0
+
+	*
 
 /*		- - - - -
 						 ||		Import the sample file		||
@@ -36,4 +38,15 @@
 	}
 
 
-	save 		"${d2019}/2019-10.dta", replace
+	if `source' == 0 {
+
+		foreach file of global datasets {
+
+			import delimited ///
+					using "${raw}/${`file'}.csv" ///
+					, clear
+
+			save 		"${mastData}/${`file'}.dta", replace
+		}
+
+	}
