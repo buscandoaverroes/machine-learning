@@ -20,7 +20,11 @@ pacman::p_load(stargazer,
                reshape2,
                data.table,
                shiny,
-               readstata13)
+               readstata13,
+               foreach,
+               doParallel,
+               parallel,
+               MASS)
 
                         
 
@@ -67,33 +71,46 @@ pacman::p_load(stargazer,
     
     raw               <- file.path(data, "raw")   
     MasterData        <- file.path(data, "MasterData")
-      full            <- file.path(data, "full")
+      full            <- file.path(MasterData, "full")
     
-                        
+       
+      
+# examples ----
+      
+      
+      # 
+      # library(parallel)
+      # library(MASS)
+      # 
+      # starts <- rep(100, 40)
+      # fx <- function(nstart) kmeans(Boston, 4, nstart=nstart)
+      # numCores <- detectCores()
+      # numCores
+      # 
+      # 
+      # 
+      # 
+      # system.time(
+      #   results <- lapply(starts, fx)
+      # )
+      # 
+      # 
+      # system.time(
+      #   results <- mclapply(starts, fx, mc.cores = numCores)
+      # )
+      # 
+      # 
+      # 
+      # for (i in 1:3) {
+      #   print(sqrt(i))
+      # }
+      
                         
 
                         # ---- Import the dta file ----
-      
-      
-      library(parallel)
-      library(MASS)
-      
-      starts <- rep(100, 40)
-      fx <- function(nstart) kmeans(Boston, 4, nstart=nstart)
-      numCores <- detectCores()
-      numCores
+     
       
       
       
-      
-      system.time(
-        results <- lapply(starts, fx)
-      )
-      
-      
-      system.time(
-        results <- mclapply(starts, fx, mc.cores = numCores)
-      )
-	
-    bks <- read.dta13(file.path(MasterData, "/master.dta"))
+    bks <- read.dta13(file.path(full, "master.dta"))
                       

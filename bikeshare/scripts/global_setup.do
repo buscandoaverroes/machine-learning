@@ -58,6 +58,7 @@
 
 	* master
 	gl 		master 		`"${mastData}/full/master.dta"'
+	gl 		tinymaster	`"${mastData}/full/tinymaster.dta"'
 
 
 

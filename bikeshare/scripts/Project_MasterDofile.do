@@ -147,8 +147,12 @@
 	   do 	"${scripts}/construct.do"
    }
 
-   if (1) {
+   if (0) {
 	   do 	"${scripts}/append.do"
+   }
+
+   if (1) {
+	   do 	"${scripts}/compress.do"
    }
 
 *iefolder*3*End_RunDofiles******************************************************
