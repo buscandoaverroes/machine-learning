@@ -1,79 +1,11 @@
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
-# Name: compres.R
+# Name: compress.R
 # Description: compresses the .dta file into R, hopefully faster.
 #
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
                   
 
 
-
-                        # ---- Opening  ---- 
-                        
-                        #-------------#
-                        # packages    #
-                        #-------------#
-
-#package names
-pacman::p_load(stargazer,
-               tidyverse,
-               readstata13,
-               reshape2,
-               data.table,
-               shiny,
-               readstata13,
-               foreach,
-               doParallel,
-               parallel,
-               MASS)
-
-                        
-
-                        #-------------#
-                        # Set User    #
-                        #-------------#
-                        
-  #     1         buscandoaverroes 
-  #     2         other
-                        
-                        
-    user <- 1
-                        
-                        
-                        
-    
-                        
-                        #-------------#
-                        # File paths  #
-                        #-------------#
-                        
-              
-    if (user == 1) {
-      # scripts
-      repo  <- "/Users/tommosher/Documents/GitHub/machine-learning/bikeshare" 
-      
-      # data
-      data        <- "/Users/tommosher/Documents/dta/bikeshare" 
-      
-    }
-    
-    if (user == 2) {
-      # Main folder
-     # projectFolder  <- "" # Tom's WB code folder
-      
-      # data
-     # rawData        <- "" # .dta data
-    }
-    
-    
-    # same no matter the user.
-    scripts           <- file.path(repo,"scripts")
-    analysis          <- file.path(scripts, "analysis")
-    
-    raw               <- file.path(data, "raw")   
-    MasterData        <- file.path(data, "MasterData")
-      full            <- file.path(MasterData, "full")
-    
-       
       
 # examples ----
       
@@ -110,7 +42,40 @@ pacman::p_load(stargazer,
                         # ---- Import the dta file ----
      
       
+      if (size == 1) {
+      
+    bks <- read.dta13(file.path(tiny),
+                      convert.factors = TRUE,
+                      nonint.factors = TRUE) # keep the factor labels for all
+
+      }
       
       
-    bks <- read.dta13(file.path(full, "master.dta"))
-                      
+      if (size == 2) {
+        
+    bks <- read.dta13(file.path(master),
+                        convert.factors = TRUE,
+                        nonint.factors = TRUE) # keep the factor labels for all
+      
+      }
+      
+      
+      
+      
+                       # ---- Prepare datasets for sum stats ----
+     
+      
+      
+      
+      
+      
+      
+      
+      # rides per year 
+      
+      # rides per mo 
+      
+      # rides per day of week 
+      
+      # 
+      
