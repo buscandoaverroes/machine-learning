@@ -66,16 +66,7 @@
      
       
       
-      
-      
-      
-      
-      
-      # rides per year 
-      
-      # rides per mo 
-      
-      # rides per day of week 
-      
-      # 
+    # general manipulations 
+    bks <- mutate(bks,
+                  yrmember = (member == "Member") )
       

@@ -1,6 +1,6 @@
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
-# Name: MASTERbks.R
-# Description: master script for bikeshare r analysis
+# Name: MOTHERbks.R
+# Description: primary script for bikeshare r analysis
 #
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
 
@@ -25,8 +25,10 @@
                  foreach,
                  doParallel,
                  parallel,
-                 MASS,
-                 dplyr)
+                 )
+                              
+  install.packages(dplyr)
+  library(dplyr)
 
 
 
