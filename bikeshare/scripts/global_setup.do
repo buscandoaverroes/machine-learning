@@ -151,3 +151,4 @@
 	gl 		d2020m2 	`"2020/202002-capitalbikeshare-tripdata"'
 	gl 		d2020m3 	`"2020/202003-capitalbikeshare-tripdata"'
 	gl 		d2020m4 	`"2020/202004-capitalbikeshare-tripdata"'
+	gl 		d2020m5		`"2020/202005-capitalbikeshare-tripdata"'

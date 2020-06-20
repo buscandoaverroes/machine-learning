@@ -67,7 +67,7 @@
   # size == 1 is tiny 
   # size == 2 is master 
   
-  size <- 1
+  size <- 2
                               
 
 

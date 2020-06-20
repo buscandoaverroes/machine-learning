@@ -17,30 +17,41 @@
                                  
                                  
     # keep only obs we need (those that can/need be collapsed by year) ----
+      setting <- 0
+     if (setting == 1) {    
        
-        keep <- c("duration",
-                  "min",
-                  "hour")                        
-    
-       
-        
-    # select key variables  ----
-     
+        sets <- c("monthstart",
+                  "yearstart", 
+                  "dowstart",
+                  "doystart",
+                  "weekstart" )
+        bks[,sets]     
         
         
+        for (i in sets) {
+          bks[,i]
+        }
         
-        # apparently I get an 'error in select' when i run from mother script
-       # bks_sml <- select(bks, duration,
-       #                  min,
-       #                  hour,
-       #                  yearstart,
-       #                  monthstart,
-       #                  weekstart, 
-       #                  dowstart,
-       #                  doystart,
-       #                  startstationnumber,
-       #                  yrmember)
-       # 
+        # the 'stata' loop 
+        for (i in sets) {
+        byi <- bks %>%
+          group_by(i) %>%
+          summarise( count = n(),
+                     nstation = n_distinct(startstationnumber),
+                     mbr_ratio = mean(yrmember, na.rm = TRUE),
+                     av_dur = mean(duration, na.rm = TRUE),
+                     av_min = mean(min, na.rm = TRUE), 
+                     av_hour = mean(hour, na.rm = TRUE),
+                     med_dur = median(duration, na.rm = TRUE),
+                     med_min = median(min, na.rm = TRUE), 
+                     med_hour = median(hour, na.rm = TRUE)
+          )
+        }
+        
+        output <- data.frame()
+        
+   
+     } # end switch   
      
      
      # create byyear: collapse by year ----
@@ -64,7 +75,7 @@
       # create bymo: collapse by month averaged across all years ----
       
       bymo <- bks %>%
-        group_by(bks$monthstart) %>%
+        group_by(monthstart) %>%
         summarise( count = n(),
                    nstation = n_distinct(startstationnumber),
                    mbr_ratio = mean(yrmember, na.rm = TRUE),
@@ -93,24 +104,6 @@
                    med_min = median(min, na.rm = TRUE), 
                    med_hour = median(hour, na.rm = TRUE)
         )
-      
-      
-      
-      # create byyearmo: collapse by year-month ----
-      
-      byyearmo <- bks %>%
-        group_by(monthstart, yearstart) %>%
-        summarise( count = n(),
-                   nstation = n_distinct(startstationnumber),
-                   mbr_ratio = mean(yrmember, na.rm = TRUE),
-                   av_dur = mean(duration, na.rm = TRUE),
-                   av_min = mean(min, na.rm = TRUE), 
-                   av_hour = mean(hour, na.rm = TRUE),
-                   med_dur = median(duration, na.rm = TRUE),
-                   med_min = median(min, na.rm = TRUE), 
-                   med_hour = median(hour, na.rm = TRUE)
-        )
-      
 
      
       
@@ -127,10 +120,12 @@
                    av_hour = mean(hour, na.rm = TRUE),
                    med_dur = median(duration, na.rm = TRUE),
                    med_min = median(min, na.rm = TRUE), 
-                   med_hour = median(hour, na.rm = TRUE)
+                   med_hour = median(hour, na.rm = TRUE),
+                   nwoyyear = n_distinct(weekstart, yearstart),
         )
-      
-      
+        
+      bydow <- mutate(bydow, 
+                      dailyrides = count / nwoyyear )
       
       
       # create bymodow: collapse by day of the week and month ----
@@ -163,8 +158,11 @@
                    av_hour = mean(hour, na.rm = TRUE),
                    med_dur = median(duration, na.rm = TRUE),
                    med_min = median(min, na.rm = TRUE), 
-                   med_hour = median(hour, na.rm = TRUE)
-        )
+                   med_hour = median(hour, na.rm = TRUE),
+                   nyear = n_distinct(yearstart, na.rm = TRUE))
+        
+      bydoy<- mutate(bydoy, 
+             dailyrides = count / nyear)
       
       
       
@@ -182,14 +180,32 @@
                    av_hour = mean(hour, na.rm = TRUE),
                    med_dur = median(duration, na.rm = TRUE),
                    med_min = median(min, na.rm = TRUE), 
+                   med_hour = median(hour, na.rm = TRUE),
+                   nyear = n_distinct(yearstart, na.rm = TRUE)
+        )
+      
+    bywoy <-  mutate(bywoy, 
+             weeklyrides = count / nyear,
+             dailyrides  = (count / (nyear * 7)) )
+      
+      
+      # create byhour: collapse by hour start ----
+      
+      byhour <- bks %>%
+        group_by(hourstart) %>%
+        summarise( count = n(),
+                   nstation = n_distinct(startstationnumber),
+                   mbr_ratio = mean(yrmember, na.rm = TRUE),
+                   av_dur = mean(duration, na.rm = TRUE),
+                   av_min = mean(min, na.rm = TRUE), 
+                   av_hour = mean(hour, na.rm = TRUE),
+                   med_dur = median(duration, na.rm = TRUE),
+                   med_min = median(min, na.rm = TRUE), 
                    med_hour = median(hour, na.rm = TRUE)
         )
       
-      
-      
      
-     # variables to create: daily rides, 
-      
+     
   
     
      

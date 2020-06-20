@@ -1,5 +1,5 @@
 /*ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー
-| File: bikeshare_master.do																|
+| File: bikeshare_Mother.do																|
 | Date: May, 2020																		|
 | Author: buscandoaverroes																|
 | Description: the master script for exploration of Capital Bikeshare project 			|
