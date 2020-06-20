@@ -59,13 +59,6 @@
 
 	* save
 	if (0) {
-		save 				${master} , replace
-
-	}
-
-	if (0) {
-		export delimited 	///
-					using	${tinymaster} ///
-					, replace 																	
+		save 				${tinymaster} , replace
 
 	}

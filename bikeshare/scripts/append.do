@@ -63,10 +63,16 @@
 		order 				`order'
 
 
-
+		* Save and export
 		save 				"${master}"	///
 								, replace
 
 
+	
+		export delimited 	///
+							using	${delim} ///
+							, replace
+
+			}
 
 		restore
