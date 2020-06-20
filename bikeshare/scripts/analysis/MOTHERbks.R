@@ -14,7 +14,7 @@
                               # packages    #
                               #-------------#
 
-  #package names
+#   package names
   pacman::p_load(stargazer,
                  tidyverse,
                  readstata13,
@@ -25,10 +25,24 @@
                  foreach,
                  doParallel,
                  parallel,
-                 )
+                 MASS)
                               
-  install.packages(dplyr)
-  library(dplyr)
+  # install.packages(dplyr)
+ 
+  # library(dplyr)
+  # library(stargazer)
+  # library(tidyverse)
+  # library(readstata13)
+  # library(reshape2)
+  # library(data.table)
+  # library(foreach)
+  # library(doParallel)
+  # library(parallel)
+  # library(parallel)
+  # library(MASS)
+                    
+  
+                            
 
 
 

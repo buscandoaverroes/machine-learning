@@ -10,7 +10,7 @@
 # examples ----
       
       
-      # 
+
       # library(parallel)
       # library(MASS)
       # 
@@ -36,7 +36,12 @@
       # for (i in 1:3) {
       #   print(sqrt(i))
       # }
-      
+
+      # registerDoParallel(numCores)
+      # foreach (i = 1:3, .combine = rbind) %dopar% {
+      #   sqrt(i)
+      # } 
+      # 
                         
 
                         # ---- Import the dta file ----
