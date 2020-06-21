@@ -49,7 +49,7 @@
       
       if (size == 1) {
       
-    bks <- read.dta13(file.path(tiny),
+    bks2 <- read.dta13(file.path(tiny),
                       convert.factors = TRUE,
                       nonint.factors = TRUE) # keep the factor labels for all
 
@@ -65,6 +65,19 @@
       }
       
       
+      if (size == 3) {
+        
+        bks <- data.table::fread(file.path(csv),
+                                 header = TRUE,
+                                 na.strings = ".",  # tell characters to be read as missing
+                                 stringsAsFactors = TRUE,
+                                 showProgress = TRUE, 
+                                 data.table = FALSE
+                                 ) # return data frame, not table   
+      }
+      
+      # clean up member, dummy
+
       
       
                        # ---- Prepare datasets for sum stats ----
@@ -72,6 +85,7 @@
       
       
     # general manipulations 
-    bks <- mutate(bks,
-                  yrmember = (member == "Member") )
+  
+       # bks <- mutate(bks,
+       #            yrmember = (member == "Member") )   not needed since fixed in stata?
       

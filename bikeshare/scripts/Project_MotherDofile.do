@@ -138,16 +138,16 @@
 
 
 	* runs the import file: warning, takes ~ 10 min
-   if (0) {
+   if (1) {
 	   do 	"${scripts}/import1.do"
    }
 
 
-   if (0) {
+   if (1) {
 	   do 	"${scripts}/construct.do"
    }
 
-   if (0) {
+   if (1) {
 	   do 	"${scripts}/append.do"
    }
 

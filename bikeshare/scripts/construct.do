@@ -95,7 +95,7 @@
 								*||		Time variables  	||*
 
 
-	if "`file'" == "d2020m4" {
+	if "`file'" == "d2020m4" | "`file'" == "d2020m5" {
 
 								*||		Begin alternate code for April 2020 	||*
 									/* we have to account for the varname changes in april 2020.
@@ -249,7 +249,7 @@
 
 * begin "normal" loop
 
-if "`file'" != "d2020m4" {
+if ("`file'" != "d2020m4" & "`file'" != "d2020m5") {
 
 
 	// minutes
@@ -339,15 +339,15 @@ if "`file'" != "d2020m4" {
 	assert 			r(r) == 2 	| r(r) == 3
 
 	// define label
-	la def 			mbr 0 "Guest" ///
+	la def 			mbr 0 "Guest/Unknown" ///
 						1 "Member" ///
 						2 "Unknown"
 
+						// really hsould change member type here to binary
+
 	// gen var with this label
 	gen 			int member: mbr = (membertype == "Member")
-	replace 		member = 2 		///
-						if membertype == "Unknown"
-	label var 		member "Member, Guest, or Unknown"
+	
 
 
 
@@ -364,8 +364,8 @@ if "`file'" != "d2020m4" {
 						/* this replaces the file it imports */
 
 
-	}
-		* end normal loop
+					}
+					* end normal loop
 
 
 

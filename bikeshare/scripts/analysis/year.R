@@ -38,7 +38,7 @@
           group_by(i) %>%
           summarise( count = n(),
                      nstation = n_distinct(startstationnumber),
-                     mbr_ratio = mean(yrmember, na.rm = TRUE),
+                     mbr_ratio = mean(member, na.rm = TRUE),
                      av_dur = mean(duration, na.rm = TRUE),
                      av_min = mean(min, na.rm = TRUE), 
                      av_hour = mean(hour, na.rm = TRUE),
@@ -60,7 +60,7 @@
        group_by(yearstart) %>%
        summarise( count = n(),
                   nstation = n_distinct(startstationnumber),
-                  mbr_ratio = mean(yrmember, na.rm = TRUE),
+                  mbr_ratio = mean(member, na.rm = TRUE),
                   av_dur = mean(duration, na.rm = TRUE),
                   av_min = mean(min, na.rm = TRUE), 
                   av_hour = mean(hour, na.rm = TRUE),
@@ -78,7 +78,7 @@
         group_by(monthstart) %>%
         summarise( count = n(),
                    nstation = n_distinct(startstationnumber),
-                   mbr_ratio = mean(yrmember, na.rm = TRUE),
+                   mbr_ratio = mean(member, na.rm = TRUE),
                    av_dur = mean(duration, na.rm = TRUE),
                    av_min = mean(min, na.rm = TRUE), 
                    av_hour = mean(hour, na.rm = TRUE),
@@ -96,7 +96,7 @@
         group_by(monthstart, yearstart) %>%
         summarise( count = n(),
                    nstation = n_distinct(startstationnumber),
-                   mbr_ratio = mean(yrmember, na.rm = TRUE),
+                   mbr_ratio = mean(member, na.rm = TRUE),
                    av_dur = mean(duration, na.rm = TRUE),
                    av_min = mean(min, na.rm = TRUE), 
                    av_hour = mean(hour, na.rm = TRUE),
@@ -114,7 +114,7 @@
         group_by(dowstart) %>%
         summarise( count = n(),
                    nstation = n_distinct(startstationnumber),
-                   mbr_ratio = mean(yrmember, na.rm = TRUE),
+                   mbr_ratio = mean(member, na.rm = TRUE),
                    av_dur = mean(duration, na.rm = TRUE),
                    av_min = mean(min, na.rm = TRUE), 
                    av_hour = mean(hour, na.rm = TRUE),
@@ -134,7 +134,7 @@
         group_by(dowstart, monthstart) %>%
         summarise( count = n(),
                    nstation = n_distinct(startstationnumber),
-                   mbr_ratio = mean(yrmember, na.rm = TRUE),
+                   mbr_ratio = mean(member, na.rm = TRUE),
                    av_dur = mean(duration, na.rm = TRUE),
                    av_min = mean(min, na.rm = TRUE), 
                    av_hour = mean(hour, na.rm = TRUE),
@@ -152,7 +152,7 @@
         group_by(doystart) %>%
         summarise( count = n(),
                    nstation = n_distinct(startstationnumber),
-                   mbr_ratio = mean(yrmember, na.rm = TRUE),
+                   mbr_ratio = mean(member, na.rm = TRUE),
                    av_dur = mean(duration, na.rm = TRUE),
                    av_min = mean(min, na.rm = TRUE), 
                    av_hour = mean(hour, na.rm = TRUE),
@@ -174,7 +174,7 @@
         group_by(weekstart) %>%
         summarise( count = n(),
                    nstation = n_distinct(startstationnumber),
-                   mbr_ratio = mean(yrmember, na.rm = TRUE),
+                   mbr_ratio = mean(member, na.rm = TRUE),
                    av_dur = mean(duration, na.rm = TRUE),
                    av_min = mean(min, na.rm = TRUE), 
                    av_hour = mean(hour, na.rm = TRUE),
@@ -188,14 +188,14 @@
              weeklyrides = count / nyear,
              dailyrides  = (count / (nyear * 7)) )
       
-      
+    #mean(as.numeric(levels(bks$member)))
       # create byhour: collapse by hour start ----
       
       byhour <- bks %>%
         group_by(hourstart) %>%
         summarise( count = n(),
                    nstation = n_distinct(startstationnumber),
-                   mbr_ratio = mean(yrmember, na.rm = TRUE),
+                   mbr_ratio = mean(member, na.rm = TRUE),
                    av_dur = mean(duration, na.rm = TRUE),
                    av_min = mean(min, na.rm = TRUE), 
                    av_hour = mean(hour, na.rm = TRUE),

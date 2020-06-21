@@ -25,7 +25,8 @@
                  foreach,
                  doParallel,
                  parallel,
-                 MASS)
+                 MASS,
+                 readr)
                               
   # install.packages(dplyr)
  
@@ -66,8 +67,9 @@
     
   # size == 1 is tiny 
   # size == 2 is master 
+  # size == 3 is csv
   
-  size <- 2
+  size <- 3
                               
 
 
@@ -104,9 +106,10 @@
   
   raw               <- file.path(data, "raw")   
   MasterData        <- file.path(data, "MasterData")
-  full            <- file.path(MasterData, "full")
-  tiny            <- file.path(full, "tinymaster.dta")
-  master            <- file.path(full, "master.dta")
+    full            <- file.path(MasterData, "full")
+    tiny            <- file.path(full, "tinymaster.dta")
+    master          <- file.path(full, "master.dta")
+    csv             <- file.path(full, "master.csv")
 
                                   
                                     
@@ -130,4 +133,4 @@
     source(file.path(analysis, "year.R"))
   }
             
- 
+ # so try to re-import main csv, bks$member should be only 0 1. 
