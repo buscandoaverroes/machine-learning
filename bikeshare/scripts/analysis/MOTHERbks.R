@@ -134,3 +134,4 @@
   }
             
  # so try to re-import main csv, bks$member should be only 0 1. 
+ # some empty "" strings in some vars (stationnames )

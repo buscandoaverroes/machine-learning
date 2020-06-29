@@ -77,8 +77,16 @@
       }
       
       # clean up member, dummy
-
       
+bks2 <- data.table::fread(file.path(csv),
+                         header = TRUE,
+                         na.strings = ".",  # tell characters to be read as missing
+                         stringsAsFactors = TRUE,
+                         showProgress = TRUE, 
+                         data.table = FALSE
+)
+
+      # %% change the type of the imported "member" var using colClasses ?data.table::fread
       
                        # ---- Prepare datasets for sum stats ----
      

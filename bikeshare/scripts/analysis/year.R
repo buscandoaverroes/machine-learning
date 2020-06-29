@@ -206,6 +206,33 @@
       
      
      
+    
+    
+    # ---- test by dow 
+    
+    
+    
+    count(bks, vars = member)[2,2]
+    sum(count(bks, vars = member)[,2] )
+    length(bks$member["Member"])
+    
+      
+    bydow <- bks %>%
+      group_by(dowstart) %>%
+      summarise( count = n(),
+                 nstation = n_distinct(startstationnumber),
+                 no_mbrs = count(bks, vars = member)[2,2],
+                 mbr_prop= mean(member = "Member"),
+                 no_users=sum(!is.na(count(bks, vars = member)[,2] )),
+                 mbr_ratio= count(bks, vars = member)[2,2] /sum(count(bks, vars = member)[,2]),
+                 av_dur = mean(duration, na.rm = TRUE),
+                 av_min = mean(min, na.rm = TRUE), 
+                 av_hour = mean(hour, na.rm = TRUE),
+                 med_dur = median(duration, na.rm = TRUE),
+                 med_min = median(min, na.rm = TRUE), 
+                 med_hour = median(hour, na.rm = TRUE),
+                 nwoyyear = n_distinct(weekstart, yearstart),
+      )
   
     
      
