@@ -178,7 +178,7 @@
 		gen 			hour = hours(elapsedtime)
 
 		// gen duration (where it's equal to seconds)
-		gen 			duation = seconds(elapsedtime)
+		gen 			duration = seconds(elapsedtime)
 
 
 		// labels

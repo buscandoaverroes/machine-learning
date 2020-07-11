@@ -119,7 +119,7 @@
                                     # run scripts #
                                     #-------------#
   
-            s1 <- 0   # import 
+            s1 <- 1   # import 
             s2 <- 1   # year 
             s3 <- 1   # idk
 
@@ -135,3 +135,6 @@
             
  # so try to re-import main csv, bks$member should be only 0 1. 
  # some empty "" strings in some vars (stationnames )
+    
+  # add "other" dummy var -- maybe this incldues the low-cost fare
+  # gen 30 min or less var dummy 
