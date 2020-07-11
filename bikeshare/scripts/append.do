@@ -63,16 +63,20 @@
 		order 				`order'
 
 
-		* Save and export
+		* Save and export (.dta file takes up like 8 gb...)
+
+		if 	(0)	{
 		save 				"${master}"	///
 								, replace
+		}
 
-
-
+			// csv takes up much less 
 		export delimited 	///
 							using	${delim} ///
 							, replace
 
-			
+
 
 		restore
+
+		clear

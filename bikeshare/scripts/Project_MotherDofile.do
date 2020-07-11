@@ -143,7 +143,7 @@
    }
 
 
-   if (1) {
+   if (0) {
 	   do 	"${scripts}/construct-2019.do"
    }
 
@@ -155,7 +155,7 @@
 	   do 	"${scripts}/append.do"
    }
 
-   if (1) {
+   if (0) {
 	   do 	"${scripts}/compress.do"
    }
 

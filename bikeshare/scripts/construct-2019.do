@@ -33,8 +33,14 @@
 
 		foreach file of global pre {
 
-			use 			"${mastData}/${`file'}.dta" ///
-								, clear
+			/*use 			"${mastData}/${`file'}.dta" ///
+								, clear*/
+			import delimited ///
+					using "${raw}/${`file'}.csv" ///
+					, clear
+
+
+			preserve
 
 
 
@@ -46,7 +52,7 @@
 
 								* ||	 value labels 	|| *
 
-	la def 			month 	1 "January" ///
+	cap la def 			month 	1 "January" ///
 							2 "February" ///
 							3 "March" ///
 							4 "April" ///
@@ -59,7 +65,7 @@
 							11 "November" ///
 							12 "December"
 
-	la def 			dow 	0 "Sunday" ///
+	cap la def 			dow 	0 "Sunday" ///
 							1 "Monday" ///
 							2 "Tuesday" ///
 							3 "Wednesday" ///
@@ -67,7 +73,7 @@
 							5 "Friday" ///
 							6 "Saturday"
 
-	la def 			qtr 	1 "Spring" ///
+	cap la def 			qtr 	1 "Spring" ///
 							2 "Summer" ///
 							3 "Fall" ///
 							4 "Winter"
@@ -345,6 +351,9 @@
 						, replace
 						/* this replaces the file it imports */
 
+	restore
+
+	clear 
 
 
 		}
