@@ -138,13 +138,17 @@
 
 
 	* runs the import file: warning, takes ~ 10 min
-   if (1) {
+   if (0) {
 	   do 	"${scripts}/import1.do"
    }
 
 
    if (1) {
-	   do 	"${scripts}/construct.do"
+	   do 	"${scripts}/construct-2019.do"
+   }
+
+   if (1) {
+	   do 	"${scripts}/construct-2020.do"
    }
 
    if (1) {

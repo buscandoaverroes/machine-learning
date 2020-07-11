@@ -2,7 +2,7 @@
 | File: construct.do															|
 | Date: May, 2020																		|
 | Author: buscandoaverroes																|
-| Description: constructs all variables 		 			|
+| Description: constructs all variables for datasets before april 2020		 			|
 | ーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーーー*/
 
 
@@ -30,26 +30,8 @@
 						 												- - - - -				*/
 
 
-	if `source' == 1 {
 
-		use 	"${d2019}/2019-10.dta", clear
-
-}
-	if `source' == 2 {
-
-		use 	///
-				"/Users/tommosher/Documents/dta/bikeshare/MasterData/2019/2019-10.dta" ///
-				, clear
-
-	}
-
-
-
-
-
-	if `source' == 0 {
-
-		foreach file of global datasets {
+		foreach file of global pre {
 
 			use 			"${mastData}/${`file'}.dta" ///
 								, clear
@@ -92,10 +74,10 @@
 
 
 
-								*||		Time variables  	||*
+								/*||		Time variables  	||*
 
 
-	if "`file'" == "d2020m4" | "`file'" == "d2020m5" {
+	if ("`file'" == "d2020m4" | "`file'" == "d2020m5" | "`file'" != "d2020m6") {
 
 								*||		Begin alternate code for April 2020 	||*
 									/* we have to account for the varname changes in april 2020.
@@ -103,9 +85,11 @@
 										the local pattern to preserve gps coordinates. Also, there is
 										no duration variable so we must construct one. */
 
-
+								if "`file'" == "d2020m4" {
 										save 		"${mastData}/april2020gps.dta" ///
 													, replace
+									}
+									/* close save april gps loop */
 
 
 
@@ -201,16 +185,14 @@
 									levelsof 		member_casual
 									assert 			r(r) == 2 	| r(r) == 3
 
-									// define label
+									// define label, but do not use
 									la def 			mbr 0 "Guest" ///
 														1 "Member" ///
 														2 "Unknown"
 
-									// gen var with this label
-									gen 			int member: mbr = (member_casual == "member")
-									replace 		member = 2 		///
-														if member_casual == "Unknown"
-									label var 		member "Member, Guest, or Unknown"
+									// gen inicator var without above label (shown as 1 or 0)
+									gen 			int member = (member_casual == "member")
+									label var 		member "Indicator for Member vs Non-Member"
 
 
 
@@ -239,7 +221,7 @@
 
 								}
 
-								*||		end alternate code for April 2020 	||*
+								*||		end alternate code for April 2020 	||*/
 
 
 
@@ -248,8 +230,6 @@
 
 
 * begin "normal" loop
-
-if ("`file'" != "d2020m4" & "`file'" != "d2020m5") {
 
 
 	// minutes
@@ -338,16 +318,18 @@ if ("`file'" != "d2020m4" & "`file'" != "d2020m5") {
 	levelsof 		membertype
 	assert 			r(r) == 2 	| r(r) == 3
 
-	// define label
+	// define label, but don't use
 	la def 			mbr 0 "Guest/Unknown" ///
 						1 "Member" ///
 						2 "Unknown"
 
 						// really hsould change member type here to binary
 
-	// gen var with this label
-	gen 			int member: mbr = (membertype == "Member")
-	
+	// gen var indicator var
+	gen 			int member = (membertype == "Member")
+	label var 		member "Indicator for Member vs Non-Member"
+
+
 
 
 
@@ -364,14 +346,6 @@ if ("`file'" != "d2020m4" & "`file'" != "d2020m5") {
 						/* this replaces the file it imports */
 
 
-					}
-					* end normal loop
-
-
-
 
 		}
 		* close file loop
-
-	}
-	* close source == 0  loop

@@ -83,8 +83,9 @@ bks2 <- data.table::fread(file.path(csv),
                          na.strings = ".",  # tell characters to be read as missing
                          stringsAsFactors = TRUE,
                          showProgress = TRUE, 
-                         data.table = FALSE
-)
+                         data.table = FALSE,
+                         colClasses = c("integer", "logical", rep("NA", 31))
+                        )
 
       # %% change the type of the imported "member" var using colClasses ?data.table::fread
       
