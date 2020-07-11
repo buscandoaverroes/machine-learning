@@ -18,43 +18,49 @@
                                  
     # keep only obs we need (those that can/need be collapsed by year) ----
       setting <- 0
-     if (setting == 1) {    
-       
-        sets <- c("monthstart",
-                  "yearstart", 
-                  "dowstart",
-                  "doystart",
-                  "weekstart" )
-        bks[,sets]     
-        
-        
-        for (i in sets) {
-          bks[,i]
-        }
-        
-        # the 'stata' loop 
-        for (i in sets) {
-        byi <- bks %>%
-          group_by(i) %>%
-          summarise( count = n(),
-                     nstation = n_distinct(startstationnumber),
-                     mbr_ratio = mean(member, na.rm = TRUE),
-                     av_dur = mean(duration, na.rm = TRUE),
-                     av_min = mean(min, na.rm = TRUE), 
-                     av_hour = mean(hour, na.rm = TRUE),
-                     med_dur = median(duration, na.rm = TRUE),
-                     med_min = median(min, na.rm = TRUE), 
-                     med_hour = median(hour, na.rm = TRUE)
-          )
-        }
-        
-        output <- data.frame()
-        
-   
-     } # end switch   
+     # if (setting == 1) {    
+     #   
+     #    sets <- c("monthstart",
+     #              "yearstart", 
+     #              "dowstart",
+     #              "doystart",
+     #              "weekstart" )
+     #    bks[,sets]     
+     #    
+     #    
+     #    for (i in sets) {
+     #      bks[,i]
+     #    }
+     #    
+     #    # the 'stata' loop 
+     #    for (i in sets) {
+     #    byi <- bks %>%
+     #      group_by(i) %>%
+     #      summarise( count = n(),
+     #                 nstation = n_distinct(startstationnumber),
+     #                 mbr_ratio = mean(member, na.rm = TRUE),
+     #                 av_dur = mean(duration, na.rm = TRUE),
+     #                 av_min = mean(min, na.rm = TRUE), 
+     #                 av_hour = mean(hour, na.rm = TRUE),
+     #                 med_dur = median(duration, na.rm = TRUE),
+     #                 med_min = median(min, na.rm = TRUE), 
+     #                 med_hour = median(hour, na.rm = TRUE)
+     #      )
+     #    }
+     #    
+     #    output <- data.frame()
+     #    
+     # 
+     # } # end switch   
      
      
-     # create byyear: collapse by year ----
+    
+                                  #-------------#
+                                  # import Rda  # ----
+                                  #-------------#
+      bks <- readRDS(file.path(MasterData, "motherdata.Rda"))
+      
+      # create byyear: collapse by year ----
     
       byyear <- bks %>%
        group_by(yearstart) %>%
@@ -188,9 +194,6 @@
              weeklyrides = count / nyear,
              dailyrides  = (count / (nyear * 7)) )
       
-    #mean(as.numeric(levels(bks$member)))
-      # create byhour: collapse by hour start ----
-      
       byhour <- bks %>%
         group_by(hourstart) %>%
         summarise( count = n(),
@@ -203,36 +206,28 @@
                    med_min = median(min, na.rm = TRUE), 
                    med_hour = median(hour, na.rm = TRUE)
         )
+    
+      a2020 <- data.table::fread("/Users/tommosher/Documents/dta/bikeshare/raw/2020/202004-capitalbikeshare-tripdata.csv",
+                                 header = TRUE,
+                                 na.strings = ".",  # tell characters to be read as missing
+                                 stringsAsFactors = TRUE,
+                                 showProgress = TRUE, 
+                                 data.table = FALSE
+                                  )
       
-     
-     
-    
-    
-    # ---- test by dow 
-    
-    
-    # 
-    # count(bks, vars = member)[2,2]
-    # sum(count(bks, vars = member)[,2] )
-    # length(bks$member["Member"])
-    # 
-    #   
-    # bydow <- bks %>%
-    #   group_by(dowstart) %>%
-    #   summarise( count = n(),
-    #              nstation = n_distinct(startstationnumber),
-    #              no_mbrs = count(bks, vars = member)[2,2],
-    #              mbr_prop= mean(member = "Member"),
-    #              no_users=sum(!is.na(count(bks, vars = member)[,2] )),
-    #              mbr_ratio= count(bks, vars = member)[2,2] /sum(count(bks, vars = member)[,2]),
-    #              av_dur = mean(duration, na.rm = TRUE),
-    #              av_min = mean(min, na.rm = TRUE), 
-    #              av_hour = mean(hour, na.rm = TRUE),
-    #              med_dur = median(duration, na.rm = TRUE),
-    #              med_min = median(min, na.rm = TRUE), 
-    #              med_hour = median(hour, na.rm = TRUE),
-    #              nwoyyear = n_distinct(weekstart, yearstart),
-    #   )
-    # 
-    # 
-     
+      j2020 <- data.table::fread("/Users/tommosher/Documents/dta/bikeshare/raw/2020/202006-capitalbikeshare-tripdata.csv",
+                                       header = TRUE,
+                                       na.strings = ".",  # tell characters to be read as missing
+                                       stringsAsFactors = TRUE,
+                                       showProgress = TRUE, 
+                                       data.table = FALSE
+                                       )       
+      
+     m2020 <- data.table::fread("/Users/tommosher/Documents/dta/bikeshare/raw/2020/202005-capitalbikeshare-tripdata.csv",
+                                header = TRUE,
+                                na.strings = ".",  # tell characters to be read as missing
+                                stringsAsFactors = TRUE,
+                                showProgress = TRUE, 
+                                data.table = FALSE
+                              )
+       

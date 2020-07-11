@@ -23,7 +23,7 @@
 	local dt 					start
 
 	local dropvars 				startdate enddate membertype
-	local april2020dropvars		ride_id rideable_type started_at ended_at start_station_id end_station_id start_lat start_lng end_lat end_lng member_casual elapsedtime
+	local april2020dropvars		ride_id rideable_type started_at ended_at start_lat start_lng end_lat end_lng member_casual elapsedtime
 
 /*		- - - - -
 						 ||		1.	Import the 	.dta file	||
@@ -40,9 +40,9 @@
 			import delimited ///
 					using "${raw}/${`file'}.csv" ///
 					, clear
-					
-					
-			preserve 
+
+
+			preserve
 
 
 
@@ -52,6 +52,15 @@
 /*		- - - - -
 							 ||		2.	Variable Construction 	||
 							 												- - - - -				*/
+
+
+
+								* ||	change varnames 	|| *
+
+	rename 				start_station_id 	startstationnumber
+	rename 				end_station_id		endstationnumber
+
+
 
 
 								* ||	 value labels 	|| *
@@ -157,9 +166,8 @@
 
 					* ||	 Units of Time	 || *
 
-		// generate duration variable
 
-			// subtract start and end
+		// subtract start and end
 			gen 		elapsedtime = datetimeend - datetimestart
 			format 		elapsedtime %tC
 
@@ -168,6 +176,9 @@
 
 		// hours
 		gen 			hour = hours(elapsedtime)
+
+		// gen duration (where it's equal to seconds)
+		gen 			duation = seconds(elapsedtime)
 
 
 		// labels
@@ -226,8 +237,8 @@
 							/* this replaces the file it imports */
 
 
-		restore 
-		
+		restore
+
 		clear
 
 	}

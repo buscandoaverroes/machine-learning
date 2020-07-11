@@ -119,13 +119,13 @@
                                     # run scripts #
                                     #-------------#
   
-            s1 <- 1   # import 
+            s1 <- 0   # import 
             s2 <- 1   # year 
             s3 <- 1   # idk
 
   # import  
   if (s1 == 1) {
-    source(file.path(analysis, "compress.R"))
+    source(file.path(analysis, "import.R"))
   }
             
   # year  
