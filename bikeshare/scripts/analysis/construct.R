@@ -206,6 +206,22 @@
                    med_min = median(min, na.rm = TRUE), 
                    med_hour = median(hour, na.rm = TRUE)
         )
+      
+      byhouryr <- bks %>%
+        group_by(yearstart, hourstart) %>%
+        summarise( count = n(),
+                   nstation = n_distinct(startstationnumber),
+                   mbr_ratio = mean(member, na.rm = TRUE),
+                   av_dur = mean(duration, na.rm = TRUE),
+                   av_min = mean(min, na.rm = TRUE), 
+                   av_hour = mean(hour, na.rm = TRUE),
+                   med_dur = median(duration, na.rm = TRUE),
+                   med_min = median(min, na.rm = TRUE), 
+                   med_hour = median(hour, na.rm = TRUE)
+        ) 
+        byhouryr$year <- factor(byhouryr$yearstart, ordered = TRUE)
+        
+        
     
       
       # create dlyrd: one row is average for each day since opening ----
