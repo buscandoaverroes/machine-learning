@@ -119,7 +119,7 @@
                                     # run scripts #
                                     #-------------#
   
-            s1 <- 1   # import 
+            s1 <- 0   # import 
             s2 <- 1   # year 
             s3 <- 1   # idk
 

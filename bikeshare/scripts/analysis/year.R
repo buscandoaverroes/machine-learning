@@ -1,5 +1,5 @@
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
-# Name: year.R
+# Name: construct.R
 # Description: creates dataset where observations are by year
 #
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
@@ -207,27 +207,18 @@
                    med_hour = median(hour, na.rm = TRUE)
         )
     
-      a2020 <- data.table::fread("/Users/tommosher/Documents/dta/bikeshare/raw/2020/202004-capitalbikeshare-tripdata.csv",
-                                 header = TRUE,
-                                 na.strings = ".",  # tell characters to be read as missing
-                                 stringsAsFactors = TRUE,
-                                 showProgress = TRUE, 
-                                 data.table = FALSE
-                                  )
       
-      j2020 <- data.table::fread("/Users/tommosher/Documents/dta/bikeshare/raw/2020/202006-capitalbikeshare-tripdata.csv",
-                                       header = TRUE,
-                                       na.strings = ".",  # tell characters to be read as missing
-                                       stringsAsFactors = TRUE,
-                                       showProgress = TRUE, 
-                                       data.table = FALSE
-                                       )       
-      
-     m2020 <- data.table::fread("/Users/tommosher/Documents/dta/bikeshare/raw/2020/202005-capitalbikeshare-tripdata.csv",
-                                header = TRUE,
-                                na.strings = ".",  # tell characters to be read as missing
-                                stringsAsFactors = TRUE,
-                                showProgress = TRUE, 
-                                data.table = FALSE
-                              )
+      # create dlyrd: one row is average for each day since opening ----
+      dlyrd <- bks %>%
+        group_by(hourstart) %>%
+        summarise( count = n(),
+                   nstation = n_distinct(startstationnumber),
+                   mbr_ratio = mean(member, na.rm = TRUE),
+                   av_dur = mean(duration, na.rm = TRUE),
+                   av_min = mean(min, na.rm = TRUE), 
+                   av_hour = mean(hour, na.rm = TRUE),
+                   med_dur = median(duration, na.rm = TRUE),
+                   med_min = median(min, na.rm = TRUE), 
+                   med_hour = median(hour, na.rm = TRUE)
+        )
        
