@@ -210,7 +210,7 @@
       
       # create dlyrd: one row is average for each day since opening ----
       dlyrd <- bks %>%
-        group_by(hourstart) %>%
+        group_by(yearstart, doystart) %>%
         summarise( count = n(),
                    nstation = n_distinct(startstationnumber),
                    mbr_ratio = mean(member, na.rm = TRUE),
@@ -221,4 +221,31 @@
                    med_min = median(min, na.rm = TRUE), 
                    med_hour = median(hour, na.rm = TRUE)
         )
-       
+      
+      dlyrd_mbr <- bks %>%
+        group_by(yearstart, doystart, member) %>%
+        summarise( count = n(),
+                   nstation = n_distinct(startstationnumber),
+                   mbr_ratio = mean(member, na.rm = TRUE),
+                   av_dur = mean(duration, na.rm = TRUE),
+                   av_min = mean(min, na.rm = TRUE), 
+                   av_hour = mean(hour, na.rm = TRUE),
+                   med_dur = median(duration, na.rm = TRUE),
+                   med_min = median(min, na.rm = TRUE), 
+                   med_hour = median(hour, na.rm = TRUE)
+        )
+      # sort on year and day of year
+      dlyrd <- arrange(dlyrd, yearstart, doystart)
+      dlyrd_mbr <- arrange(dlyrd, yearstart, doystart)
+      # create a numer == to _n for day of operation, rearrange
+      dlyrd <- arrange(dlyrd, yearstart, doystart) 
+      dlyrd_mbr <- arrange(dlyrd, yearstart, doystart)
+      
+      dlyrd$dayid <- seq_len(nrow(dlyrd))
+      dlyrd_mbr$dayid <- seq_len(nrow(dlyrd_mbr)) # every row here should skip
+      
+      dlyrd <- arrange(dlyrd, dayid, yearstart, doystart)
+      dlyrd_mbr <- arrange(dlyrd, dayid, yearstart, doystart)
+      
+      dlyrd$year <- factor(dlyrd$yearstart, ordered = TRUE)
+      dlyrd_mbr$year <- factor(dlyrd$yearstart, ordered = TRUE)  

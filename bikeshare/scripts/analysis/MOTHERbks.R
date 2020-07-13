@@ -26,7 +26,8 @@
                  doParallel,
                  parallel,
                  MASS,
-                 readr)
+                 readr
+                 )
                               
   # install.packages(dplyr)
  
