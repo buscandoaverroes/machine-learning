@@ -14,34 +14,34 @@
                               # packages    #
                               #-------------#
 
-#   package names
-  pacman::p_load(stargazer,
-                 tidyverse,
-                 readstata13,
-                 reshape2,
-                 data.table,
-                 shiny,
-                 readstata13,
-                 foreach,
-                 doParallel,
-                 parallel,
-                 MASS,
-                 readr
-                 )
+# #   package names
+#   pacman::p_load(stargazer,
+#                  tidyverse,
+#                  readstata13,
+#                  reshape2,
+#                  data.table,
+#                  readstata13,
+#                  foreach,
+#                  parallel,
+#                  MASS,
+#                  readr
+#                  )
+#                               
+                              # doParallel
                               
   # install.packages(dplyr)
  
-  # library(dplyr)
-  # library(stargazer)
-  # library(tidyverse)
-  # library(readstata13)
+  library(dplyr)
+  library(stargazer)
+  library(tidyverse)
+  library(readstata13)
   # library(reshape2)
-  # library(data.table)
-  # library(foreach)
+  library(data.table)
+  library(foreach)
   # library(doParallel)
   # library(parallel)
   # library(parallel)
-  # library(MASS)
+   library(MASS)
                     
   
                             
@@ -107,10 +107,12 @@
   
   raw               <- file.path(data, "raw")   
   MotherData        <- file.path(data, "MotherData")
+    kpop            <- file.path(MotherData, "kpop")
     full            <- file.path(MotherData, "full")
     tiny            <- file.path(full, "tinymaster.dta")
     master          <- file.path(full, "master.dta")
     csv             <- file.path(full, "master.csv")
+    
 
                                   
                                     

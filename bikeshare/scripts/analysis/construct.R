@@ -7,7 +7,7 @@
 
 
                                  #-------------#
-                                 # cumulative  # ----
+                                 # create      # ----
                                  #-------------#
                                  
                                  # this will work if you reinstall the dplyr package manually...
@@ -264,4 +264,52 @@
       dlyrd_mbr <- arrange(dlyrd, dayid, yearstart, doystart)
       
       dlyrd$year <- factor(dlyrd$yearstart, ordered = TRUE)
-      dlyrd_mbr$year <- factor(dlyrd$yearstart, ordered = TRUE)  
+      dlyrd_mbr$year <- factor(dlyrd$yearstart, ordered = TRUE) 
+      
+      
+      
+      
+                
+      
+                                        #-------------#
+                                        # export as Rda # ----
+                                        #-------------#
+      
+      # create object of names 
+      files <- c("bydow",
+                 "bydoy",
+                 "byhour",
+                 "byhouryr",
+                 "bymo",
+                 "bymodow",
+                 "bywoy",
+                 "byyear",
+                 "byyearmo",
+                 "dlyrd",
+                 "dlyrd_mbr")
+      
+      # set working directory
+      setwd(file.path(kpop))
+      
+      # create a vector with the length == no of names 
+      lst <- vector("list", # tells R the type of vector (list)
+                    length(files)) # with a length of object files
+      
+      # use a for loop to iterate over the names 
+      for (i in seq_along(files)) {
+        print(files[i])
+        saveRDS(lst[[i]], # where object cycles through list
+                file.path(kpop, # start in this directory
+                         paste0(files[i], ".Rda" ))) #concatenate the following strings
+        #cat("*")
+      }
+      
+      lapply(names(lst), function(i) {
+        i1 <- lst[[i]]  # store the name of each item in i1 
+        save(i1, 
+                file = paste0(getwd(), '/', i, '.Rda'))
+      })
+      
+      test1 <- readRDS(file.path(kpop,
+              "byhour.Rda"))
+     
