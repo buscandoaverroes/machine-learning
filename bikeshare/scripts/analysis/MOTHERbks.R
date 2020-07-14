@@ -53,10 +53,10 @@
                               #-------------#
                               
                               #     1         buscandoaverroes 
-                              #     2         other
+                              #     2         6k
 
   
-  user <- 1
+  user <- 2
 
 
 
@@ -93,11 +93,11 @@
   }
   
   if (user == 2) {
-    # Main folder
-    # projectFolder  <- 
+    # scripts
+    repo  <- "/Users/tom/Documents/GitHub/machine-learning/bikeshare" 
     
     # data
-    # rawData        <- 
+    data        <- "/Volumes/Al-Hakem-II/Datasets/bks" 
   }
   
   
@@ -106,8 +106,8 @@
   analysis          <- file.path(scripts, "analysis")
   
   raw               <- file.path(data, "raw")   
-  MasterData        <- file.path(data, "MasterData")
-    full            <- file.path(MasterData, "full")
+  MotherData        <- file.path(data, "MotherData")
+    full            <- file.path(MotherData, "full")
     tiny            <- file.path(full, "tinymaster.dta")
     master          <- file.path(full, "master.dta")
     csv             <- file.path(full, "master.csv")
@@ -121,7 +121,7 @@
                                     #-------------#
   
             s1 <- 0   # import 
-            s2 <- 1   # year 
+            s2 <- 1   # construct 
             s3 <- 1   # idk
 
   # import  
@@ -129,9 +129,9 @@
     source(file.path(analysis, "import.R"))
   }
             
-  # year  
+  # construct  
   if (s2 == 1) {
-    source(file.path(analysis, "year.R"))
+    source(file.path(analysis, "construct.R"))
   }
             
  # so try to re-import main csv, bks$member should be only 0 1. 
