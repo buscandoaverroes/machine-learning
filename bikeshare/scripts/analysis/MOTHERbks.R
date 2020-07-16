@@ -7,9 +7,9 @@
 
 
 
-                              
-                              # ---- Opening  ---- 
-                              
+
+                              # ---- Opening  ----
+
                               #-------------#
                               # packages    #
                               #-------------#
@@ -26,11 +26,11 @@
 #                  MASS,
 #                  readr
 #                  )
-#                               
+#
                               # doParallel
-                              
+
   # install.packages(dplyr)
- 
+
   library(dplyr)
   library(stargazer)
   library(tidyverse)
@@ -38,25 +38,26 @@
   # library(reshape2)
   library(data.table)
   library(foreach)
+  library(leaflet)
   # library(doParallel)
   # library(parallel)
   # library(parallel)
    library(MASS)
-                    
-  
-                            
+
+
+
 
 
 
                               #-------------#
                               # Set User    #
                               #-------------#
-                              
-                              #     1         buscandoaverroes 
+
+                              #     1         buscandoaverroes
                               #     2         6k
 
-  
-  user <- 2
+
+  user <- 1
 
 
 
@@ -65,79 +66,84 @@
                               #-------------#
                               # tiny / main #
                               #-------------#
-    
-  # size == 1 is tiny 
-  # size == 2 is master 
+
+  # size == 1 is tiny
+  # size == 2 is master
   # size == 3 is csv
-  
+
   size <- 3
-                              
 
 
-                              
-                              
+
+
+
                               #-------------#
                               # File paths  #
                               #-------------#
 
 
 
-  
+
   if (user == 1) {
     # scripts
-    repo  <- "/Users/tommosher/Documents/GitHub/machine-learning/bikeshare" 
-    
+    repo  <- "/Users/tommosher/Documents/GitHub/machine-learning/bikeshare"
+
     # data
-    data        <- "/Users/tommosher/Documents/dta/bikeshare" 
-    
+    data        <- "/Users/tommosher/Documents/dta/bikeshare"
+
   }
-  
+
   if (user == 2) {
     # scripts
-    repo  <- "/Users/tom/Documents/GitHub/machine-learning/bikeshare" 
-    
+    repo  <- "/Users/tom/Documents/GitHub/machine-learning/bikeshare"
+
     # data
-    data        <- "/Volumes/Al-Hakem-II/Datasets/bks" 
+    data        <- "/Volumes/Al-Hakem-II/Datasets/bks"
   }
-  
-  
+
+
   # same no matter the user.
   scripts           <- file.path(repo,"scripts")
   analysis          <- file.path(scripts, "analysis")
-  
-  raw               <- file.path(data, "raw")   
+
+  raw               <- file.path(data, "raw")
   MotherData        <- file.path(data, "MotherData")
     kpop            <- file.path(MotherData, "kpop")
     full            <- file.path(MotherData, "full")
     tiny            <- file.path(full, "tinymaster.dta")
     master          <- file.path(full, "master.dta")
     csv             <- file.path(full, "master.csv")
-    
 
-                                  
-                                    
-                                    
-                                    
+
+
+
+
+
                                     #-------------#
                                     # run scripts #
                                     #-------------#
-  
-            s1 <- 0   # import 
-            s2 <- 1   # construct 
-            s3 <- 1   # idk
 
-  # import  
+            s1 <- 0   # import          imports from stata
+            s2 <- 1   # construct:      takes bks.Rda and makes other files
+            s3 <- 1   # plot              tbd
+
+  # import
   if (s1 == 1) {
     source(file.path(analysis, "import.R"))
   }
-            
-  # construct  
+
+  # construct
   if (s2 == 1) {
     source(file.path(analysis, "construct.R"))
   }
             
- # so try to re-import main csv, bks$member should be only 0 1. 
+  # plot 
+  if (s3 == 1) {
+    source(file.path(analysis, "plot.R"))
+  }
+
+ # so try to re-import main csv, bks$member should be only 0 1.
  # some empty "" strings in some vars (stationnames )
-    
+
   # add "other" dummy var -- maybe this incldues the low-cost fare
-  # gen 30 min or less var dummy 
+  # gen 30 min or less var dummy

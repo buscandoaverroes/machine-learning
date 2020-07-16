@@ -9,7 +9,8 @@
                                     #-------------#
                                     # plot set 1  # ----
                                     #-------------#
-
+byhour <- readRDS(file.path(kpop, "byhour.Rda"))
+dlyrd <-  readRDS(file.path(kpop, "dlyrd.Rda"))
 
 
 ggplot(data = byhour) + 
