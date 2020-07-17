@@ -43,6 +43,7 @@
   # library(parallel)
   # library(parallel)
    library(MASS)
+                              
 
 
 
@@ -124,7 +125,7 @@
                                     #-------------#
 
             s1 <- 0   # import          imports from stata
-            s2 <- 1   # construct:      takes bks.Rda and makes other files
+            s2 <- 0   # construct:      takes bks.Rda and makes other files
             s3 <- 0   # plot              tbd
             s4 <- 0   # leaf 
 
