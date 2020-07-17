@@ -250,6 +250,8 @@
                    med_min = median(min, na.rm = TRUE), 
                    med_hour = median(hour, na.rm = TRUE)
         )
+      
+  
       # sort on year and day of year
       dlyrd <- arrange(dlyrd, yearstart, doystart)
       dlyrd_mbr <- arrange(dlyrd, yearstart, doystart)
@@ -266,9 +268,31 @@
       dlyrd$year <- factor(dlyrd$yearstart, ordered = TRUE)
       dlyrd_mbr$year <- factor(dlyrd$yearstart, ordered = TRUE) 
       
+      # create by station, average beginning rides per year
+      stnyr <- bks %>%
+        group_by(yearstart, startstationnumber) %>%
+        summarise( count = n(),
+                   nstation = n_distinct(startstationnumber),
+                   mbr_ratio = mean(member, na.rm = TRUE),
+                   av_dur = mean(duration, na.rm = TRUE),
+                   av_min = mean(min, na.rm = TRUE), 
+                   av_hour = mean(hour, na.rm = TRUE),
+                   med_dur = median(duration, na.rm = TRUE),
+                   med_min = median(min, na.rm = TRUE), 
+                   med_hour = median(hour, na.rm = TRUE)
+        )
       
       
-      
+      gps <- read.dta13(file.path(MotherData, "april2020gps.dta"),
+                        convert.factors = TRUE,
+                        nonint.factors = TRUE,
+                        select.cols = c("ride_id",
+                                        "started_at",
+                                        "ended_at",
+                                        "start_station_name",
+                                        "startstationnumber",
+                                        "start_lat",
+                                        "start_lng"))
                 
       
                                         #-------------#
@@ -340,3 +364,7 @@
               file.path(kpop, "dlyrd.Rda"))
       saveRDS(dlyrd_mbr,
               file.path(kpop, "dlyrd_mbr.Rda"))
+      saveRDS(gps,
+              file.path(kpop, "gps-import.Rda"))
+      saveRDS(stnyr,
+              file.path(kpop, "stnyr.Rda"))

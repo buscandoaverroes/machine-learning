@@ -125,7 +125,8 @@
 
             s1 <- 0   # import          imports from stata
             s2 <- 1   # construct:      takes bks.Rda and makes other files
-            s3 <- 1   # plot              tbd
+            s3 <- 0   # plot              tbd
+            s4 <- 0   # leaf 
 
   # import
   if (s1 == 1) {
@@ -141,7 +142,13 @@
   if (s3 == 1) {
     source(file.path(analysis, "plot.R"))
   }
-
+  
+  # leaf 
+  if (s4 == 1) {
+    source(file.path(analysis, "leaf.R"))
+  }
+            
+            
  # so try to re-import main csv, bks$member should be only 0 1.
  # some empty "" strings in some vars (stationnames )
 

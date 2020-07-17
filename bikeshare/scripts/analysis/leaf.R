@@ -4,15 +4,25 @@
 #
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
 
-       library(leaflet)                     
+       library(leaflet)
+       library(urbnmapr)
+       
                             
                             #-------------#
                             # plot set 1  # ----
                             #-------------#
                             
                             
-      m <- leaflet() %>%
+      m <- leaflet(gps.d) %>%
         addTiles() %>%
-        addMarkers(lng=174.786, lat=-36.852, popup = "I could go here")
+        addCircleMarkers(~lng, ~lat, label = ~as.character(stnname),
+                         radius = 4,
+                         stroke = FALSE, fillOpacity = 0.75) #popup is when you click
       m
       
+      
+      # urbn mapr 
+      counties <- get_urbn_map("counties", sf = TRUE)
+      counties %>%
+        ggplot(aes()) + 
+        geom(sf)
