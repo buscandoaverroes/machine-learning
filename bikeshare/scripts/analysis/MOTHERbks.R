@@ -58,7 +58,7 @@
                               #     2         6k
 
 
-  user <- 1
+  user <- 2
 
 
 
@@ -87,10 +87,10 @@
 
   if (user == 1) {
     # scripts
-    repo  <- "/Users/tommosher/Documents/GitHub/machine-learning/bikeshare"
+    repo  <- "~/Documents/GitHub/machine-learning/bikeshare"
 
     # data
-    data        <- "/Users/tommosher/Documents/dta/bikeshare"
+    data        <- "~/Documents/dta/bikeshare"
 
   }
 
@@ -108,6 +108,7 @@
   analysis          <- file.path(scripts, "analysis")
 
   raw               <- file.path(data, "raw")
+  gadm              <- "/Volumes/Al-Hakem-II/other+files/gadm"
   MotherData        <- file.path(data, "MotherData")
     kpop            <- file.path(MotherData, "kpop")
     full            <- file.path(MotherData, "full")
@@ -125,7 +126,8 @@
                                     #-------------#
 
             s1 <- 0   # import          imports from stata
-            s2 <- 0   # construct:      takes bks.Rda and makes other files
+            s2 <- 1   # construct:      takes bks.Rda and makes other files
+            s3 <- 0   # gps             constructs all gps things
             s3 <- 0   # plot              tbd
             s4 <- 0   # leaf 
 
@@ -139,8 +141,13 @@
     source(file.path(analysis, "construct.R"))
   }
             
-  # plot 
+  # gps
   if (s3 == 1) {
+    source(file.path(analysis, "gps.R"))
+  }
+  
+  # plot 
+  if (s4 == 1) {
     source(file.path(analysis, "plot.R"))
   }
   
@@ -155,3 +162,5 @@
 
   # add "other" dummy var -- maybe this incldues the low-cost fare
   # gen 30 min or less var dummy
+            
+# credits:  Apple Maps, OpenStreetMaps, GADM

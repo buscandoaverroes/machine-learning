@@ -13,9 +13,9 @@
                             #-------------#
                             
                             
-      m <- leaflet(gps.d) %>%
+      m <- leaflet(key) %>%
         addTiles() %>%
-        addCircleMarkers(~lng, ~lat, label = ~as.character(stnname),
+        addCircleMarkers(~lng, ~lat, label = ~as.character(stn),
                          radius = 4,
                          stroke = FALSE, fillOpacity = 0.75) #popup is when you click
       m

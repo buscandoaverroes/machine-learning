@@ -7,9 +7,15 @@
 
 
   library(sp)
+  library(stringi)
+  library(dplyr)
+  library(stringdist)
+  library(GADMTools)
+  library(rgeos)
+  library(raster)
 
                             #-------------#
-                            # load stata  # ----
+                            # load data  # ----
                             #-------------#
 
                             
@@ -23,7 +29,7 @@
                             # clean+clpse # ----
                             #-------------#
     
-  # obtain a full list of station name/id numbers 
+  # 1. obtain a full list of station name/id numbers 
    
     # ensure only 1 unique value of station name string for each station id
     ck <- bks %>%
@@ -36,11 +42,16 @@
     #create a dictionary of all unique stationnames
     oldnames <- bks %>%
             group_by(startstation) %>%
-            summarise()
+            summarise() %>%
+            filter(oldnames, startstation != "")    # remove blank entries
+
     
-    # make a dictionary of all string names with gps coordinate 
     
-      # load the raw datasets 
+    
+    
+  # 2.  make a dictionary of all string names with gps coordinate _ - -
+    
+    # load the raw datasets 
     a2020 <- data.table::fread(file.path(raw, "2020/202004-capitalbikeshare-tripdata.csv"),
                                header = TRUE,
                                na.strings = ".",  # tell characters to be read as missing
@@ -63,36 +74,145 @@
                                showProgress = TRUE, 
                                data.table = FALSE
                               ) # return data frame, not table  
-      # rbind them 
+    # rbind them 
     new2020 <- rbind(a2020, m2020, j2020)
     
-      # create list of distinct names and coordinates
+    # create list of distinct names and coordinates
      newnames <- new2020 %>%
       group_by(start_station_name, start_lat, start_lng) %>%
       summarise()
     
-      # then calculate the distance btween similar points %%
-      mutate(newnames, 
-             dist = spDists(c(newnames$start_lng, newnames$start_lat), longlat)) 
-    
-      spDists(c(newnames$start_lng, newnames$start_lat), longlat = TRUE)
+    # then sort on name, lng 
+     newnames %>% arrange(desc(start_station_name),
+                          desc(start_lng))
      
-    library(geosphere)
+    # remove the first item in the duplicate list of names 
       
-      list1 <- data.frame(lng = newnames$start_lng, lat = newnames$start_lat)
+     # identify duplicate strings 
+     newnames$dup <- stri_duplicated(newnames$start_station_name)
+     
+     # remove those with duplicate entries 
+     newnames <-  filter(newnames, dup == "FALSE")
+     newnames <-  select(newnames, start_station_name, start_lat, start_lng)
+     
+
+     
+     
+     
+
+  # 3.  merge the two together = gpskey
+     
+      # keys: oldnames : startstation
+        #     newnames : startstation
+     
+      gpskey <- full_join(oldnames, newnames, 
+                          by = c("startstation" = "start_station_name"))
       
-      mat <- distm(list1)
+        # sort 
+      gpskey %>%
+        arrange(gpskey, startstation )
+      
+      
+      
+      
+      
+    
+  # 4. replace gps coordinates for stations that are actually the same w/ sim strings
+     
+      # gpskey$match <- vector("double", nrow(gpskey))
+      # 
+      # for (i in seq_along(gpskey$startstation)) {
+      #   gpskey$match[i] <- amatch(gpskey$startstation,
+      #                             table = gpskey$startstation,
+      #                             nomatch = 0,
+      #                             maxDist = 10)
+      # }
+      #   
+      
+      
+      # just export to CSV then edit and reimport 
+      write.csv(gpskey, file.path(MotherData, "gpskey-out.csv"))
+       
+      # import 
+      key <- read.csv(file.path(MotherData, "gpskey-in.csv")) %>%
+        select(-match, -X) %>%
+        rename(stn = startstation, lat = start_lat, lng = start_lng)
+     
+     
+     
+                            #-------------#
+                            # add features # ----
+                            #-------------#
+      
+      
+      #ie state, county, near metro, etc
+      
+      # import shp files : gadm_sf_import_shp 
+        # note that this just imports the .shp files and makes a gadm_sf object
         
-    gps <- bks %>%
-      group_by(startstationnumber, start_station_name) %>%
-      summarise(stnid = unique(startstationnumber),
-                stnname = unique(start_station_name),
-                lat = unique(start_lat),
-                lng = unique(start_lng))   # ah but this isn't in bks, only in months
-    
-    
-    # now pull a full list of those with gps coordinates 
-    
+        # states
+        usa1 <- gadm_sf_import_shp(dir = file.path(gadm, "gadm36_USA_shp"),
+                           "gadm36_USA_1",
+                           level = 1,
+                           keepall = TRUE)
+        # county/city
+        usa2 <- gadm_sf_import_shp(dir = file.path(gadm, "gadm36_USA_shp"),
+                                   "gadm36_USA_2",
+                                   level = 2,
+                                   keepall = TRUE)
+      
+        
+        gadm_plot(usa1)
+        
+                # backup, import rds files 
+                usa1rds <- readRDS(file.path(gadm, "gadm36_USA_shp/gadm36_USA_2_sf.Rds"))
+                
+                
+      # import the shp files using raster w shpfile we downloaded from gadm
+                #  usa2 <- raster::getData( "GADM",
+                #                         file.path(gadm, "gadm36_USA_shp/gadm36_USA_2."),
+                #                         download = FALSE,
+                #                         country = 'USA',
+                #                         level = 2)
+                # 
+                # list.files(path = file.path(gadm, "gadm36_USA_shp"))
+                # this doesn't work. wants me to download from internet. 
+            
+      # associate the gps coordinates with a gadm index number: over?
+            
+                
+           
+             # filter missing gps coords   
+              keys <- filter(key, lng != "NA") #KEYShort
+               
+              
+               long <- keys$lng
+               lat  <- keys$lat  
+               coords <- data.frame(long, lat)
+               names <- data.frame(keys$stn)
+               
+               usa <- SpatialPointsDataFrame(coords = coords, data = names )
+          
+               
+              # make an overlay %%%
+              
+              overlay <- over(x = usa,# spatialpointsdataframe
+                              y = ) # spatialpolygons
+                
+          [, c("NAME_0", "NAME_1", "NAME_2")]
+          
+          
+          
+          
+        
+        
+        
+      
+      # match that number to a location name varlist, input lat-long : listNames
+      
+      
+      
+      
     
     
     
@@ -101,40 +221,20 @@
                             #-------------#
                             # map to dtas # ----
                             #-------------#
-    library(nycflights13)
     
-    jan1 <- filter(flights, month == 1 , day == 1)
+      # 
+      # bks2 <- full_join(bks, key, by = c("startstation" = "stn" ))  %>% 
+      #   rename( slat = lat, slng = lng) 
+      # 
+      # 
+      # bks2 <-  full_join(bks, key, by = c("endstation" = "stn")) %>%
+      #   rename( elat = lat, elng = lng)
+      # 
     
-    arrange(flights, year, month, day)
-    
-    select(flights, year, month, day)
-    
-    
-    
-    
-    select(gpsd, stnid)  # if select doesn't work then reinstall/reload
-    
+
     
     
-    stnyr2 <- readRDS(file.path(kpop, "stnyr.Rda")) %>%
-      rename(stnid = startstationnumber) %>%
-      select(yearstart, stnid, count, mbr_ratio, med_min)
-      
-    
-    left_join(gpsd, stnyr2, key = "stnid")
-                  
-    
-    
-    
-    
-    
-                            #-------------#
-                            # add features # ----
-                            #-------------#
-    
-    
-    #ie state, county, near metro, etc
-    
+                           
     
     
     
