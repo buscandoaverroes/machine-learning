@@ -131,7 +131,7 @@
       
       
       # just export to CSV then edit and reimport 
-      write.csv(gpskey, file.path(MotherData, "gpskey-out.csv"))
+      #write.csv(gpskey, file.path(MotherData, "gpskey-out.csv"))
        
       # import 
       key <- read.csv(file.path(MotherData, "gpskey-in.csv")) %>%
@@ -140,6 +140,15 @@
      
      
      
+      
+      
+      
+      
+      
+      
+      
+      
+      
                             #-------------#
                             # add features # ----
                             #-------------#
@@ -155,14 +164,16 @@
                            "gadm36_USA_1",
                            level = 1,
                            keepall = TRUE)
+      
+        usa2 <- gadm_sf_import_shp(dir = file.path(gadm, "gadm36_USA_shp"),
+                                    level = 2,
+                                    keepall = TRUE)
         # county/city
         usa2 <- gadm_sf_import_shp(dir = file.path(gadm, "gadm36_USA_shp"),
                                    "gadm36_USA_2",
                                    level = 2,
                                    keepall = TRUE)
       
-        
-        gadm_plot(usa1)
         
                 # backup, import rds files 
                 usa1rds <- readRDS(file.path(gadm, "gadm36_USA_shp/gadm36_USA_2_sf.Rds"))
@@ -192,20 +203,15 @@
                names <- data.frame(keys$stn)
                
                usa <- SpatialPointsDataFrame(coords = coords, data = names )
+               
+               str(usa1rds)
           
                
               # make an overlay %%%
               
-              overlay <- over(x = usa,# spatialpointsdataframe
-                              y = ) # spatialpolygons
-                
-          [, c("NAME_0", "NAME_1", "NAME_2")]
-          
-          
-          
-          
-        
-        
+              # overlay <- over(x = usa,# spatialpointsdataframe
+              #                 y = usa1rds) # spatialpolygons
+              # 
         
       
       # match that number to a location name varlist, input lat-long : listNames

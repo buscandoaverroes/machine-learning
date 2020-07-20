@@ -127,7 +127,7 @@
 
             s1 <- 0   # import          imports from stata
             s2 <- 1   # construct:      takes bks.Rda and makes other files
-            s3 <- 0   # gps             constructs all gps things
+            s3 <- 1   # gps             constructs all gps things
             s3 <- 0   # plot              tbd
             s4 <- 0   # leaf 
 

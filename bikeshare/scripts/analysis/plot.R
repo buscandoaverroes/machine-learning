@@ -87,3 +87,4 @@ ggplot(data = dlyrd) +
     ggplot(data = byhouryr) + 
       geom_smooth(mapping = aes(x = hourstart, y = med_min, color = year  )) +
       facet_wrap(~ year)
+    
