@@ -177,7 +177,7 @@
         
                 # backup, import rds files 
                 usa1rds <- readRDS(file.path(gadm, "gadm36_USA_shp/gadm36_USA_2_sf.Rds"))
-                
+          # %%%% check out       
                 
       # import the shp files using raster w shpfile we downloaded from gadm
                 #  usa2 <- raster::getData( "GADM",
