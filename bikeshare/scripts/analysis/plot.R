@@ -9,7 +9,9 @@
                                     #-------------#
                                     # plot set 1  # ----
                                     #-------------#
-
+byhour <- readRDS(file.path(kpop, "byhour.Rda"))
+byhouryr <- readRDS(file.path(kpop, "byhouryr.Rda"))
+dlyrd <-  readRDS(file.path(kpop, "dlyrd.Rda"))
 
 
 ggplot(data = byhour) + 
@@ -43,6 +45,8 @@ ggplot(data = dlyrd) +
     ggplot(data = dlyrd) + 
       geom_smooth(mapping = aes(x = doystart, y = med_min, color = year  ))
     
+   
+    
     #  stack year by dif color: y = median minutes, split by member
     # ggplot(data = dlyrd) + 
     #   geom_smooth(mapping = aes(x = doystart, y = med_min, color = year  )) + 
@@ -69,6 +73,11 @@ ggplot(data = dlyrd) +
       geom_smooth(mapping = aes(x = hourstart, y = count, color = year  )) +
       facet_wrap(~ year)
 
+    # y= mbr ratio, in year grid
+    ggplot(data = byhouryr) + 
+      geom_smooth(mapping = aes(x = hourstart, y = mbr_ratio, color = year  )) +
+      facet_wrap(~ year)
+    
     # y= mbr ratio, in year grid
     ggplot(data = byhouryr) + 
       geom_smooth(mapping = aes(x = hourstart, y = mbr_ratio, color = year  )) +
