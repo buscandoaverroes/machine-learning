@@ -151,7 +151,7 @@
         # note that this just imports the .shp files and makes a gadm_sf object
         
         # states
-        usa1 <- gadm_sf_import_shp(dir = file.path(gadm, "gadm36_USA_shp"),
+        usa1 <- gadm_sf_loadCountries(dir = file.path(gadm, "gadm36_USA_shp"),
                            "gadm36_USA_1",
                            level = 1,
                            keepall = TRUE)
